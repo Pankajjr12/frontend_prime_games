@@ -2,13 +2,14 @@ import { Avatar, Button, Divider } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import ProfileCard from "../../../customer/components/ProfileCard";
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
 import PersonalDetailsForm from "./PersonalDetailsForm";
 import BusinessDetailsForm from "./BusinessDetailsForm";
 import PickupAddressForm from "./PickupAddressForm";
 import BankDetailsForm from "./BankDetailsForm";
+import { useAppSelector } from "../../../state/store";
 
 export const style = {
   position: "absolute" as "absolute",
@@ -23,10 +24,11 @@ export const style = {
 };
 
 const Profile = () => {
- 
+  const { sellers } = useAppSelector((store) => store);
   const [selectedForm, setSelectedForm] = useState("persionalDetails");
   const [open, setOpen] = React.useState(false);
   const handleClose = () => setOpen(false);
+  const [snackbarOpen, setOpenSnackbar] = useState(false);
 
   const handleOpen = (formName: string) => {
     setOpen(true);
@@ -48,6 +50,12 @@ const Profile = () => {
     }
   };
 
+  useEffect(() => {
+    if (sellers.profileUpdated || sellers.error) {
+      setOpenSnackbar(true);
+    }
+  }, [sellers.profileUpdated]);
+
   return (
     <div className="lg:p-20 space-y-20">
       <div className="w-full lg:w-[70%]  ">
@@ -68,22 +76,19 @@ const Profile = () => {
           </div>
         </div>
         <div className="space-y-5">
-        <Avatar
+          <Avatar
             sx={{ width: "10rem", height: "10rem" }}
             src="https://cdn.pixabay.com/photo/2014/11/29/19/33/bald-eagle-550804_640.jpg"
           />
           <div>
-          <ProfileCard
+            <ProfileCard
               keys={"Seller Name"}
-              value={"Thor"}
+              value={sellers.profile?.sellerName}
             />
-               <ProfileCard
-              keys={"Seller Email"}
-              value={"Thor123@gmail.com"}
-            />
-               <ProfileCard
+            <ProfileCard keys={"Seller Email"} value={sellers.profile?.email} />
+            <ProfileCard
               keys={"Seller Mobile"}
-              value={"+91 7865432145"}
+              value={sellers.profile?.mobile}
             />
             <Divider />
           </div>
@@ -111,17 +116,17 @@ const Profile = () => {
         <div className=" ">
           <ProfileCard
             keys={"Business Name/Brand Name"}
-            value={"Kumar thor sons"}
+            value={sellers.profile?.businessDetails?.businessName}
           />
           <Divider />
           <ProfileCard
             keys={"GSTIN"}
-            value={"gsdtin236"}
+            value={sellers.profile?.gstin || "not provided"}
           />
           <Divider />
           <ProfileCard
             keys={"Account Status"}
-            value={"PENDING"}
+            value={sellers.profile?.accountStatus}
           />
         </div>
       </div>
@@ -145,22 +150,22 @@ const Profile = () => {
           <div className="">
             <ProfileCard
               keys={"Adress"}
-              value={"001 house D block infocity"}
+              value={sellers.profile?.pickupAddress?.address}
             />
             <Divider />
             <ProfileCard
               keys={"City"}
-              value={"Gandhinagar"}
+              value={sellers.profile?.pickupAddress?.city || "not provided"}
             />
             <Divider />
             <ProfileCard
               keys={"State"}
-              value={"Gujarat"}
+              value={sellers.profile?.pickupAddress?.state}
             />
             <Divider />
             <ProfileCard
               keys={"Mobile"}
-              value={"+91 656789876"}
+              value={sellers.profile?.pickupAddress?.mobile}
             />
           </div>
         </div>
@@ -185,18 +190,19 @@ const Profile = () => {
           <div className="">
             <ProfileCard
               keys={"Account Holder Name"}
-              value={"Chris Hemisworth"}
+              value={sellers.profile?.bankDetails?.accountHolderName}
             />
             <Divider />
             <ProfileCard
               keys={"Account Number"}
-              value={"4325678932"
+              value={
+                sellers.profile?.bankDetails?.accountNumber || "not provided"
               }
             />
             <Divider />
             <ProfileCard
               keys={"IFSC CODE"}
-              value={"SBI1232"}
+              value={sellers.profile?.bankDetails?.ifsCode}
             />
           </div>
         </div>
@@ -210,7 +216,6 @@ const Profile = () => {
       >
         <Box sx={style}>{renderSelectedForm()}</Box>
       </Modal>
-
     </div>
   );
 };

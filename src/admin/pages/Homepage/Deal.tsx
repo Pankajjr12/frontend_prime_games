@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import React,{useState} from "react";
+import React, { useState } from "react";
 import DealsTable from "./DealsTable";
 import DealsCategoryTable from "./DealsCategoryTable";
 import CreateDealForm from "./CreateDealForm";
@@ -7,14 +7,14 @@ import CreateDealForm from "./CreateDealForm";
 const tab = [
   { name: "Deals" },
   { name: "Categories" },
-  { name: "Create Deal" }
-]
+  { name: "Create Deal" },
+];
 const Deal = () => {
   const [activeTab, setActiveTab] = useState(tab[0].name);
 
   const handleActiveTab = (item: any) => {
     setActiveTab(item.name);
-}
+  };
   return (
     <div>
       <div className="">

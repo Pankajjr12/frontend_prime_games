@@ -1,27 +1,44 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const SimilarProductCard = () => {
+const SimilarProductCard = ({ product }: any) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    // Scroll to the top of the page before navigating
+    window.scrollTo(0, 0);
+
+    navigate(
+      `/product-details/${product.category?.categoryId}/${product.title}/${product.id}`
+    );
+  };
   return (
-    <div className="flex -lg items-center justify-center p-4">
-      <div className="group relative rounded-md border border-gray-300 shadow-md overflow-hidden">
-        <div className="card rounded-md">
-          <img
-            className="object-cover w-full h-full" // Ensures the image covers the area
-            alt=""
-            src="https://gamefaqs.gamespot.com/a/box/6/9/3/734693_front.jpg"
-          />
+    <div onClick={handleClick} className="group ">
+      <div className="relative h-[300px]">
+        <img
+          className="h-full w-full object-cover"
+          src={product.images[0]}
+          alt={`product-similar`}
+        />
+      </div>
+      <div className="details pt-3 space-y-1 group-hover-effect  rounded-md ">
+        <div className="name space-y ">
+          <h1 className="font-semibold text-lg">
+            {product.seller?.businessDetails.businessName}
+          </h1>
+          <p className="">{product.title}</p>
         </div>
-        <div className="details p-2 space-y-1 group-hover:bg-gray-100 transition duration-200 rounded-md">
-          <div className="name">
-            <h1 className="text-lg font-semibold">Capcom</h1>
-            <p className="text-sm text-gray-600">Resident Evil 3 Remake</p>
-          </div>
-
-          <div className="price flex items-center gap-3">
-            <span className="font-semibold text-gray-800">Rs 1800</span>
-            <span className="font-thin line-through text-gray-400">Rs 999</span>
-            <span className="text-red-600 font-semibold">60%</span>
-          </div>
+        <div className="price flex items-center gap-3 ">
+          <span className="font-semibold text-gray-800">
+            {" "}
+            ₹{product.sellingPrice}
+          </span>
+          <span className="text thin-line-through text-gray-400 ">
+            ₹{product.mrpPrice}
+          </span>
+          <span className="text-[#00927c] font-semibold">
+            {product.discountPercent}% off
+          </span>
         </div>
       </div>
     </div>

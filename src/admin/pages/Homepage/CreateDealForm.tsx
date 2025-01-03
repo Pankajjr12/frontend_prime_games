@@ -11,8 +11,12 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import React from "react";
+import { useAppDispatch, useAppSelector } from "../../../state/store";
+import { createDeal } from "../../../state/Admin/dealSlice";
 
 const CreateDealForm = () => {
+  const { homePage } = useAppSelector(store => store);
+  const dispatch = useAppDispatch()
   const formik = useFormik({
     initialValues: {
       discount: 0,
@@ -21,8 +25,15 @@ const CreateDealForm = () => {
     // validationSchema: validationSchema,
     onSubmit: (values) => {
       console.log("Form Data -- :", values);
+      dispatch(createDeal({
+        discount: values.discount, category: {
+          id: values.category
+        }
+      }))
     },
   });
+
+  console.log("------ ",homePage.homePageData?.dealCategories)
 
   return (
     <Box

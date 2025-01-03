@@ -1,15 +1,15 @@
-import * as React from "react";
-import { styled } from "@mui/material/styles";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import { Box, Button, IconButton, Modal, Paper, styled, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+// import {Deal} from '../../../types/dealTypes';
+
 import EditIcon from '@mui/icons-material/Edit';
-import { IconButton } from "@mui/material";
-import { Delete } from "@mui/icons-material";
+
+import CreateDealForm from './CreateDealForm';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Delete } from '@mui/icons-material';
+import { useAppDispatch, useAppSelector } from '../../../state/store';
+import { deleteDeal, getAllDeals } from '../../../state/Admin/dealSlice';
+import UpdaterDeal from './UpdaterDeal';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -31,65 +31,105 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(
-  num: number,
-  name: string,
-  calories: number,
-  carbs: number
-) {
-  return { num, name, calories, carbs };
-}
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
 
-const rows = [
-  createData(1, "Frozen yoghurt", 159, 24),
-  createData(2, "Ice cream sandwich", 237, 37),
-  createData(3, "Eclair", 262,  24),
-  createData(4, "Cupcake", 305, 67),
-  createData(5, "Gingerbread", 356, 49),
-];
+  boxShadow: 24,
+  p: 4,
+};
+const DealsTable = () => {
+  const { homePage,deal } = useAppSelector(store => store)
+  const [selectedDealId, setSelectedDealId] = useState<number>();
+  const [open, setOpen] = React.useState(false);
+  // const [openCreateDealForm, setOpenCreateDealForm] = React.useState(false);
+  const dispatch = useAppDispatch()
 
-export default function DealsTable() {
-  const handleDelete = (id: any) => () => {
-    console.log("delete");
+
+  const handleOpen = (id: number | undefined) => () => {
+    setSelectedDealId(id);
+    setOpen(true);
   };
+  const handleClose = () => setOpen(false);
+  const handleDelete = (id: any) => () => {
+    dispatch(deleteDeal(id))
+  }
+  useEffect(() => {
+    dispatch(getAllDeals())
+  }, [])
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>No</StyledTableCell>
-            <StyledTableCell>image</StyledTableCell>
-            <StyledTableCell>category</StyledTableCell>
-            <StyledTableCell>Discount</StyledTableCell>
-            <StyledTableCell align="right">Edit</StyledTableCell>
-            <StyledTableCell align="right">Delete</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <StyledTableRow key={row.name}>
-              <StyledTableCell component="th" scope="row">
-                {row.name}
-              </StyledTableCell>
-              <StyledTableCell>{row.num}</StyledTableCell>
-              <StyledTableCell>{row.calories}</StyledTableCell>
-              <StyledTableCell align="right">{row.carbs}</StyledTableCell>
+    <>
 
-              <StyledTableCell align="right">
-                    <IconButton >
-                      <EditIcon className="text-black cursor-pointer" />
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>No</StyledTableCell>
+              <StyledTableCell>image</StyledTableCell>
+              <StyledTableCell >category</StyledTableCell>
+              <StyledTableCell >Discount</StyledTableCell>
+              <StyledTableCell align="right">Edit</StyledTableCell>
+              <StyledTableCell align="right">Delete</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {deal.deals.map(
+              (deal: any, index) => (
+                <StyledTableRow key={deal.id}>
+                  <StyledTableCell component="th" scope="row">
+                    {index + 1}
+                  </StyledTableCell>
+                  <StyledTableCell component="th" scope="row">
+                    <img
+                      className="w-20 rounded-md"
+                      src={deal.category.image}
+                      alt=""
+                    />
+                  </StyledTableCell>
+
+                  <StyledTableCell component="th" scope="row">
+                    {deal.category.categoryId}
+                  </StyledTableCell>
+                  <StyledTableCell component="th" scope="row">
+                    {deal.discount}%
+                  </StyledTableCell>
+
+                  <StyledTableCell align="right">
+                    <IconButton onClick={handleOpen(deal.id)}>
+                      <EditIcon className="text-orange-400 cursor-pointer" />
                     </IconButton>
                   </StyledTableCell>
                   <StyledTableCell align="right">
-                    <IconButton>
+                    <IconButton onClick={handleDelete(deal.id)}>
                       
                       <Delete className="text-red-600 cursor-pointer" />
                     </IconButton>
                   </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
+
+                </StyledTableRow>
+              )
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {selectedDealId && <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <UpdaterDeal id={selectedDealId} />
+        </Box>
+      </Modal>}
+
+
+    </>
+  )
 }
+
+export default DealsTable

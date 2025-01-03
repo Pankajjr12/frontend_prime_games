@@ -1,49 +1,94 @@
 import { Box, Button, Divider } from "@mui/material";
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import OrderStepper from "./OrderStepper";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
+import { useAppDispatch, useAppSelector } from "../../../state/store";
+import {
+  cancelOrder,
+  fetchOrderById,
+  fetchOrderItemById,
+} from "../../../state/Customer/orderSlice";
 
 const OrderDetails = () => {
+  const dispatch = useAppDispatch();
+  const { cart, auth, orders } = useAppSelector((store) => store);
+  const { orderItemId, orderId } = useParams();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(
+      fetchOrderItemById({
+        orderItemId: Number(orderItemId),
+        jwt: localStorage.getItem("jwt") || "",
+      })
+    );
+    dispatch(
+      fetchOrderById({
+        orderId: Number(orderId),
+        jwt: localStorage.getItem("jwt") || "",
+      })
+    );
+  }, [auth.jwt]);
+
+  if (!orders.orders || !orders.orderItem) {
+    return (
+      <div className="h-[80vh] flex justify-center items-center">
+        No order found
+      </div>
+    );
+  }
+
+  const handleCancelOrder = () => {
+    dispatch(cancelOrder(orderId));
+  };
   return (
     <Box className="space-y-5">
       <section className="flex flex-col gap-5 justify-center items-center">
         <img
           className="w-[140px] h-[100px]"
-          src="https://imagesv2.desimartini.com/images/202410/alia-bhatt-1729836640.jpeg"
+          src={orders.orderItem?.product.images[0]}
           alt=""
         />
         <div className="text-sm space-y-1 text-center">
-          <h1 className="font-bold">{"Creed"}</h1>
+          <h1 className="font-bold">
+            {orders.orderItem?.product.seller?.businessDetails.businessName}
+          </h1>
+          <p>{orders.orderItem?.product.title}</p>
           <p>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Autem
-            officia porro temporibus optio iste nulla laboriosam dolor.
-          </p>
-          <p>
-            <strong>Size : </strong>Ubisoft
+            <strong>Year : </strong>2018
           </p>
         </div>
         <div className="hover:font-bold">
-          <Button onClick={() => navigate(`/reviews/${5}/create`)}>
+          <Button
+            onClick={() =>
+              navigate(`/reviews/${orders.orderItem?.product.id}/create`)
+            }
+          >
             Write Review
           </Button>
         </div>
       </section>
 
       <section className="border p-5">
-        <OrderStepper orderStatus={"SHIPPED"} />
+        <OrderStepper orderStatus={orders.currentOrder?.orderStatus} />
       </section>
 
       <div className="border p-5">
         <h1 className="font-bold pb-3">Delivery Address</h1>
         <div className="text-sm space-y-2">
           <div className="flex gap-5 font-medium">
+            <p> {orders.currentOrder?.shippingAddress.name}</p>
             <p>{"Pankaj"}</p>
             <Divider flexItem orientation="vertical" />
-            <p>{"987656786"}</p>
+            <p>{orders.currentOrder?.shippingAddress.mobile}</p>
           </div>
-          <p>asdfsdfsfsfgfgfsdf</p>
+          <p>
+            {orders.currentOrder?.shippingAddress.address},{" "}
+            {orders.currentOrder?.shippingAddress.city},{" "}
+            {orders.currentOrder?.shippingAddress.state} -{" "}
+            {orders.currentOrder?.shippingAddress.pinCode}
+          </p>
         </div>
       </div>
       <div className="border space-y-4">
@@ -53,12 +98,12 @@ const OrderDetails = () => {
             <p>
               You saved{" "}
               <span className="text-primary-color font-medium text-xs">
-                Rs {499}.000
+                {orders.orderItem?.mrpPrice - orders.orderItem?.sellingPrice}.00
               </span>{" "}
               on this item
             </p>
           </div>
-          <p className="font-medium">Rs {799}.00</p>
+          <p className="font-medium">₹ {orders.orderItem?.sellingPrice}.00</p>
         </div>
 
         <div className="px-5">
@@ -73,20 +118,23 @@ const OrderDetails = () => {
         <div className="px-5 pb-5">
           <p className="text-xs">
             <strong>Sold by : </strong>
-            {"Creed"}
+            {orders.orderItem.product.seller?.businessDetails.businessName}
           </p>
         </div>
 
         <div className="p-10">
           <Button
-            disabled={true}
+            disabled={orders.currentOrder?.orderStatus === "CANCELLED"}
+            onClick={handleCancelOrder}
             color="error"
             sx={{ py: "0.7rem" }}
-            fullWidth
             className=""
-            variant="contained"
+            variant="outlined"
+            fullWidth
           >
-            {true ? "order cancelled" : "Cancel Order"}
+            {orders.currentOrder?.orderStatus === "CANCELLED"
+              ? "order canceled"
+              : "Cancel Order"}
           </Button>
         </div>
       </div>

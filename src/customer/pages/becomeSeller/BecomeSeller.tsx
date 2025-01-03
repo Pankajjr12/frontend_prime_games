@@ -1,14 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SellerAccountForm from "./SellerAccountForm";
 import SellerLoginForm from "./SellerLoginForm";
 import { Button } from "@mui/material";
+import { useAppDispatch, useAppSelector } from "../../../state/store";
+import { useLocation } from "react-router-dom";
 
 const BecomeSeller = () => {
+  const [activeStep, setActiveStep] = useState(0);
+  const dispatch = useAppDispatch();
+  const location = useLocation();
   const [isLoginPage, setIsLoginPage] = useState(false);
+  const { sellerAuth } = useAppSelector((store) => store);
 
-  const handleShowPage = () => {
-    setIsLoginPage(!isLoginPage);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  useEffect(() => {
+    if (sellerAuth.sellerCreated || sellerAuth.error || sellerAuth.otpSent) {
+      setSnackbarOpen(true);
+      console.log("store ", sellerAuth.error);
+    }
+  }, [sellerAuth.sellerCreated, sellerAuth.error, sellerAuth.otpSent]);
 
   return (
     <div className="grid md:gap-10 grid-cols-3 min-h-screen">
@@ -31,13 +43,18 @@ const BecomeSeller = () => {
 
       <section className="hidden md:col-span-1 md:flex  lg:col-span-2  justify-center items-center">
         <div className="lg:w-[70%] px-5 space-y-10">
-            <div className="space-y-2 font-bold text-center">
-                <p className="text-2xl">Join the Marketplace Revolution</p>
-                <p className="text-lg text-teal-500"> Boost Your Sales Today</p>
-            </div>
-            <img className="" src={"https://images.hdqwalls.com/wallpapers/shadow-of-the-tomb-raider-hd-77.jpg"} alt="" />
+          <div className="space-y-2 font-bold text-center">
+            <p className="text-2xl">Join the Marketplace Revolution</p>
+            <p className="text-lg text-teal-500"> Boost Your Sales Today</p>
+          </div>
+          <img
+            className=""
+            src={
+              "https://images.hdqwalls.com/wallpapers/shadow-of-the-tomb-raider-hd-77.jpg"
+            }
+            alt=""
+          />
         </div>
-
       </section>
     </div>
   );

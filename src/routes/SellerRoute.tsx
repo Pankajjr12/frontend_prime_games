@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import Payment from '../seller/pages/payyment/Payment'
 
@@ -13,9 +13,13 @@ import Profile from '../seller/pages/account/Profile'
 
 
 const SellerRoute = () => {
+
+  const [sellers, setSellers] = useState(null);
+
+
   return (
     <Routes>
-        <Route path='/' element={<HomePage />} />
+        <Route path='/' element={<HomePage/> }  />
         <Route path='/products' element={<Products/>} />
         <Route path='/add-product' element={<AddProductForm />} />
         <Route path='/update-product/:productId' element={<UpdateProductForm />} />

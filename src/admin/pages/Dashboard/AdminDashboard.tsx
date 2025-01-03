@@ -1,8 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AdminDrawerList from "../../components/AdminDrawerList";
 import AdminRoute from "../../../routes/AdminRoute";
+import { Alert, Snackbar } from "@mui/material";
+import { useAppSelector } from "../../../state/store";
 
 const AdminDashboard = () => {
+  const { deal,admin } = useAppSelector(store => store)
+  const [snackbarOpen, setOpenSnackbar] = useState(false);
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  }
+  useEffect(() => {
+    if (deal.dealCreated || deal.dealUpdated ||deal.error || admin.categoryUpdated) {
+      setOpenSnackbar(true)
+    }
+  }, [deal.dealCreated, deal.dealUpdated, deal.error,admin.categoryUpdated])
   const toggleDrawer = () => {};
   return (
     <div>
@@ -14,6 +27,20 @@ const AdminDashboard = () => {
           <AdminRoute />
         </section>
       </div>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={snackbarOpen} autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={deal.error ? "error" : "success"}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {deal.error ? deal.error : deal.dealCreated ? "Deal created successfully" : deal.dealUpdated ? "deal updated successfully" : admin.categoryUpdated?"Category Updated successfully": ""}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

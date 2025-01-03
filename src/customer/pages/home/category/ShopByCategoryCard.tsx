@@ -1,21 +1,35 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import './shopCard.css'
+const ShopByCategoryCard = ({ item }: any) => {
 
-const ShopByCategoryCard = () => {
+  const handleClick = () => {
+    // Scroll to the top of the page (or specific component)
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth', // Adds smooth scroll effect
+    });
+    
+    // Navigate to the category page
+    navigate(`/products/${item.categoryId}`);
+  };
+  const navigate = useNavigate();
   return (
-    <div className="flex flex-col justify-center items-center group cursor-pointer relative overflow-hidden">
-    <div className="w-[150px] h-[150px] flex justify-center items-center">
-      <div className="rainbow-border w-full h-full">
-        <img
-          className="group-hover:scale-95 transition-transform duration-600 object-cover object-top w-full h-full rounded-2xl"
-          src="https://th.bing.com/th/id/OIP.egMTOhl9ppFW3O2zrt69GQHaEK?rs=1&pid=ImgDetMain"
-          alt="no-img"
-        />
+    <div
+      onClick={handleClick}
+      className="flex flex-col justify-center items-center group relative overflow-hidden cursor-pointer"
+    >
+      <div className="w-[150px] h-[150px] flex justify-center items-center">
+        <div className="rainbow-border w-full h-full">
+          <img
+            className="group-hover:scale-95 transition-transform duration-600 object-cover object-top w-full h-full rounded-2xl"
+            src={item.image}
+            alt="no-img"
+          />
+        </div>
       </div>
+      <h1 className="text-center text-sm md:text-xl font-semibold mt-3 leading-tight whitespace-nowrap overflow-hidden scrolling-text">{item.name}</h1>
     </div>
-    <h1>Spider Man</h1>
-  </div>
-  
-  
   );
 };
 

@@ -7,16 +7,11 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button, FormControl, IconButton, InputLabel, Menu, MenuItem, Select, styled, TableFooter, TablePagination } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '../../../state/store';
+import { deleteCoupon } from '../../../state/Admin/adminCouponSlice';
+import { Coupon } from '../../../types/couponTypes';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
-function createData(
-    name: string,
-    calories: number,
-    fat: number,
-    carbs: number,
-    protein: number,
-) {
-    return { name, calories, fat, carbs, protein };
-}
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -52,14 +47,16 @@ const accountStatuses = [
 
 export default function CouponTable() {
 
+    const [page, setPage] = React.useState(0);
     const [status, setStatus] = React.useState(accountStatuses[0].status)
+    const { sellers, adminCoupon } = useAppSelector(store => store)
+    const dispatch = useAppDispatch();
+
+    const handleDeleteCoupon = (id:number) => {
+        dispatch(deleteCoupon({ id, jwt: localStorage.getItem("jwt") || "" }))
+    }
  
- 
-    const rows = [
-        createData('Pankaj',12,23,34,28),
-        createData('Poonam',10,22,3,89),
-        createData('Rahul',10,53,56,56)
-      ]
+
 
 
     return (
@@ -96,16 +93,23 @@ export default function CouponTable() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows?.map((seller) => (
-                            <StyledTableRow key={seller.name}>
+                    {adminCoupon.coupons?.map((coupon: Coupon) => (
+                            <StyledTableRow key={coupon.id}>
                                 <StyledTableCell component="th" scope="row">
-                                    {seller.name}
+                                    {coupon.code}
                                 </StyledTableCell>
-                                <StyledTableCell >{seller.fat}</StyledTableCell>
-                                <StyledTableCell >{seller.carbs}</StyledTableCell>
-                                <StyledTableCell >{seller.calories}</StyledTableCell>
-                                <StyledTableCell >{seller.protein}</StyledTableCell>
-                             
+                                <StyledTableCell >{coupon.validityStartDate}</StyledTableCell>
+                                <StyledTableCell >{coupon.validityEndDate}</StyledTableCell>
+                                <StyledTableCell >{coupon.minimumOrderValue}</StyledTableCell>
+                                <StyledTableCell >{coupon.discountPercentage}</StyledTableCell>
+                                <StyledTableCell align="right">{coupon.active ? "Active" : "Deactive"}</StyledTableCell>
+
+                                <StyledTableCell align="right">
+                                    <IconButton onClick={() => handleDeleteCoupon(coupon.id)}>
+                                        <DeleteOutlineIcon className='text-red-700 cursor-pointer' />
+                                    </IconButton>
+
+                                </StyledTableCell>
 
                             </StyledTableRow>
                         ))}

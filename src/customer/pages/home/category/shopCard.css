@@ -1,0 +1,21 @@
+h1 {
+
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  /* Start scrolling text when the parent container is hovered */
+  .group:hover h1 {
+    animation: scroll-text 10s linear infinite;
+  }
+  
+  /* Define the scrolling animation */
+  @keyframes scroll-text {
+    0% {
+      transform: translateX(0);  /* Start at the current position of the text */
+    }
+    100% {
+      transform: translateX(-100%); /* Scroll to the left */
+    }
+  }

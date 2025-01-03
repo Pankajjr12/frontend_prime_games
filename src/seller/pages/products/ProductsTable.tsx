@@ -7,6 +7,11 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import EditIcon from '@mui/icons-material/Edit';
+import { useAppDispatch, useAppSelector } from "../../../state/store";
+import { useNavigate } from "react-router-dom";
+import { fetchSellerProducts } from "../../../state/Seller/sellerProductSlice";
+import { Button, IconButton } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -47,36 +52,77 @@ const rows = [
 ];
 
 export default function ProductsTable() {
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const { sellerProduct } = useAppSelector((store) => store);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  React.useEffect(() => {
+    dispatch(fetchSellerProducts(localStorage.getItem("jwt")));
+  }, []);
+
+  const handleUpdateStack = (id: number | undefined)=>() => {
+   
+  }
+
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
-        <TableHead>
-        <TableRow>
+    <>
+      <h1 className="pb-5 font-bold text-xl">Products</h1>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <TableHead>
+            <TableRow>
               <StyledTableCell>Images</StyledTableCell>
               <StyledTableCell align="right">Title</StyledTableCell>
               <StyledTableCell align="right">MRP</StyledTableCell>
               <StyledTableCell align="right">Selling Price</StyledTableCell>
-              <StyledTableCell align="right">Color</StyledTableCell>
+              <StyledTableCell align="right">Brand</StyledTableCell>
               <StyledTableCell align="right">Update Stock</StyledTableCell>
               <StyledTableCell align="right">Update</StyledTableCell>
             </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <StyledTableRow key={row.name}>
-              <StyledTableCell component="th" scope="row" align="left">
-                {row.name}
-              </StyledTableCell>
-              <StyledTableCell  align="right">{row.calories}</StyledTableCell>
-              <StyledTableCell  align="right">{row.fat}</StyledTableCell>
-              <StyledTableCell  align="right">{row.carbs}</StyledTableCell>
-              <StyledTableCell  align="right">{row.protein}</StyledTableCell>
-              <StyledTableCell  align="right">{row.protein}</StyledTableCell>
-              <StyledTableCell  align="right">{row.protein}</StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {sellerProduct.products.map((item) => (
+              <StyledTableRow key={item.id}>
+                <StyledTableCell component="th" scope="row">
+                  <div className="flex gap-1 flex-wrap">
+                    {item.images.map((image) => (
+                      <img className="w-20 rounded-md" src={image} alt="" />
+                    ))}
+                  </div>
+                </StyledTableCell>
+                <StyledTableCell align="right">{item.title}</StyledTableCell>
+                <StyledTableCell align="right">
+                  {" "}
+                  ₹{item.mrpPrice}.0
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  {" "}
+                  ₹{item.sellingPrice}.0
+                </StyledTableCell>
+                <StyledTableCell align="right">{item.brand}</StyledTableCell>
+                <StyledTableCell align="right">
+                  {" "}
+                  <Button onClick={handleUpdateStack(item.id)} size="small">
+                    {item.in_stock ? "in_stock" : "out_stock"}
+                  </Button>
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  <IconButton
+                    onClick={() =>
+                      navigate("/seller/update-product/" + item.id)
+                    }
+                    color="primary"
+                    className="bg-primary-color"
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 }

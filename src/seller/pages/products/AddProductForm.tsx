@@ -26,23 +26,28 @@ import { psLevelTwo } from "../../../data/ps/levelTwoPs";
 import { trendingLevelTwo } from "../../../data/trending/levelTwoTrending";
 import { pcLevelThree } from "../../../data/pc/levelThreePc";
 import { psLevelThree } from "../../../data/ps/levelThreePs";
+import { createProduct } from "../../../state/Seller/sellerProductSlice";
+import { useAppDispatch, useAppSelector } from "../../../state/store";
+import { byYear } from "../../../data/filter/byYear";
+import { mainCategory } from "../../../data/mainCategory";
+import { deviceTwo } from "../../../data/appliances/deviceLlevelTwo";
+import { deviceThree } from "../../../data/appliances/deviceLevelThree";
 
 const categoryTwo: { [key: string]: any[] } = {
   pc: pcLevelTwo,
-  ps5: psLevelTwo,
-  kids: [],
+  ps: psLevelTwo,
   trending: trendingLevelTwo,
-  beauty: [],
-  electronics: [],
+  devices: deviceTwo,
+  new_games: [],
 };
 
 const categoryThree: { [key: string]: any[] } = {
   pc: pcLevelThree,
-  ps5: psLevelThree,
+  ps: psLevelThree,
   kids: [],
   trending: trendingLevelTwo,
-  beauty: [],
-  electronics: [],
+  devices: deviceThree,
+  new_games: [],
 };
 
 const validationSchema = Yup.object({
@@ -64,14 +69,16 @@ const validationSchema = Yup.object({
   quantity: Yup.number()
     .positive("Quantity should be greater than zero")
     .required("Quantity is required"),
-  year: Yup.string().required("Year is required"),
+  brand: Yup.string().required("Brand is required"),
   category: Yup.string().required("Category is required"),
-  sizes: Yup.string().required("Sizes are required"),
+  years: Yup.string().required("Year is required"),
 });
 
 const AddProductForm = () => {
   const [uploadImage, setUploadingImage] = useState(false);
-
+  const dispatch = useAppDispatch();
+  const { sellers, sellerProduct } = useAppSelector(store => store);
+  const [snackbarOpen, setOpenSnackbar] = useState(false);
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -79,15 +86,18 @@ const AddProductForm = () => {
       mrpPrice: "",
       sellingPrice: "",
       quantity: "",
-      year: "",
+      brand: "",
       images: [],
       category: "",
       category2: "",
       category3: "",
-      sizes: "",
+      years: "",
     },
     // validationSchema: validationSchema,
     onSubmit: (values) => {
+      dispatch(
+        createProduct({ request: values, jwt: localStorage.getItem("jwt") })
+      );
       console.log(values);
     },
   });
@@ -110,9 +120,13 @@ const AddProductForm = () => {
   const childCategory = (category: any, parentCategoryId: any) => {
     return category.filter((child: any) => {
       // console.log("Category", parentCategoryId, child)
-      return child.parentCategoryId == parentCategoryId;
+      return child.parentCategoryId === parentCategoryId;
     });
   };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  }
 
   return (
     <div>
@@ -235,15 +249,15 @@ const AddProductForm = () => {
           <Grid item xs={12} sm={6} lg={3}>
             <FormControl
               fullWidth
-              error={formik.touched.year && Boolean(formik.errors.year)}
+              error={formik.touched.years && Boolean(formik.errors.years)}
               required
             >
-              <InputLabel id="year-label">Color</InputLabel>
+              <InputLabel id="year-label">Year</InputLabel>
               <Select
                 labelId="year-label"
                 id="year"
                 name="year"
-                value={formik.values.year}
+                value={formik.values.years}
                 onChange={formik.handleChange}
                 label="Year"
               >
@@ -251,19 +265,40 @@ const AddProductForm = () => {
                   <em>None</em>
                 </MenuItem>
 
-                {/* {colors.map((color, index) => <MenuItem value={color.name}>
-                  <div className="flex gap-3">
-                    <span style={{ backgroundColor: color.hex }} className={`h-5 w-5 rounded-full ${color.name === "White" ? "border" : ""}`}></span>
-                    <p>{color.name}</p>
-                  </div>
-                </MenuItem>)} */}
+                {byYear.map((color, index) => (
+                  <MenuItem value={color.value}>
+                    <div className="flex gap-3">
+                      <span
+                        style={{ backgroundColor: color.label }}
+                        className={`h-5 w-5 rounded-full ${
+                          color.value === "White" ? "border" : ""
+                        }`}
+                      ></span>
+                      <p>{color.value}</p>
+                    </div>
+                  </MenuItem>
+                ))}
               </Select>
-              {formik.touched.year && formik.errors.year && (
-                <FormHelperText>{formik.errors.year}</FormHelperText>
+              {formik.touched.years && formik.errors.years && (
+                <FormHelperText>{formik.errors.years}</FormHelperText>
               )}
             </FormControl>
           </Grid>
-          <Grid item xs={12} sm={6} lg={3}></Grid>
+          <Grid item xs={12} sm={6} lg={3}>
+            <TextField
+              fullWidth
+              id="brand"
+              name="brand"
+              label="Brand"
+              value={formik.values.brand}
+              onChange={formik.handleChange}
+              error={formik.touched.brand && Boolean(formik.errors.brand)}
+              helperText={formik.touched.brand && formik.errors.brand}
+              required
+            />
+          </Grid>
+
+         
           <Grid item xs={12} sm={6} lg={4}>
             <FormControl
               fullWidth
@@ -280,9 +315,9 @@ const AddProductForm = () => {
                 label="Category"
               >
                 {/* <MenuItem value=""><em>None</em></MenuItem> */}
-                {/* {mainCategory.map((item) => (
+                {mainCategory.map((item) => (
                   <MenuItem value={item.categoryId}>{item.name}</MenuItem>
-                ))} */}
+                ))}
               </Select>
               {formik.touched.category && formik.errors.category && (
                 <FormHelperText>{formik.errors.category}</FormHelperText>
@@ -367,7 +402,7 @@ const AddProductForm = () => {
           </Grid>
         </Grid>
       </form>
-      {/* <Snackbar
+      <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={snackbarOpen} autoHideDuration={6000}
         onClose={handleCloseSnackbar}
@@ -380,7 +415,7 @@ const AddProductForm = () => {
         >
           {sellerProduct.error ? sellerProduct.error : "Product created successfully"}
         </Alert>
-      </Snackbar> */}
+      </Snackbar>
     </div>
   );
 };

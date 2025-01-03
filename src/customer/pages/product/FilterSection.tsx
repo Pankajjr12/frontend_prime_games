@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Divider,
@@ -13,14 +13,23 @@ import { byYear } from "../../../data/filter/byYear";
 import { price } from "../../../data/filter/price";
 import { discount } from "../../../data/filter/discount";
 import { useSearchParams } from "react-router-dom";
+import { Product } from "../../../types/productTypes";
+import { useAppSelector } from "../../../state/store";
+ // Assuming you have this hook for accessing the store
 
 const FilterSection = ({ selectedCategory, setShowSheet }: any) => {
   const [yearExpand, setYearExpand] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const { products } = useAppSelector((store) => store.products);  // Assuming `store.products` holds the product data
+  // Get products from Redux store
+
+  // Toggle year expand
   const toggleYearExpand = () => {
     setYearExpand((prev) => !prev);
   };
 
+  // Update filter params based on user selection
   const updateFilterParams = (e: any) => {
     const { value, name } = e.target;
     if (value) {
@@ -31,11 +40,46 @@ const FilterSection = ({ selectedCategory, setShowSheet }: any) => {
     setSearchParams(searchParams);
   };
 
+  // Clear all filters
   const clearAllFilters = () => {
     searchParams.forEach((value: any, key: any) => {
       searchParams.delete(key);
     });
     setSearchParams(searchParams);
+  };
+
+  // Filter products based on current filters
+  const filterProducts = () => {
+    let filtered = [...products]; // Create a shallow copy of products
+
+    // Apply filtering based on the search parameters
+    searchParams.forEach((value, key) => {
+      filtered = filtered.filter((product: Product) => {
+        // You can add filtering logic for each param here
+        if (key === "year" && product.years.includes(value)) {
+          return true;
+        }
+        if (key === "price" && product.mrpPrice <= parseInt(value)) {
+          return true;
+        }
+        if (key === "discount" && product.discountPercent === parseInt(value)) {
+          return true;
+        }
+        return false;
+      });
+    });
+
+    setFilteredProducts(filtered); // Update the filtered products state
+  };
+
+  // Run the filtering logic whenever the products or searchParams change
+  useEffect(() => {
+    filterProducts();
+  }, [products, searchParams]);
+
+  // Get the count of filtered products
+  const getFilteredProductsCount = () => {
+    return filteredProducts.length;
   };
 
   return (
@@ -79,11 +123,7 @@ const FilterSection = ({ selectedCategory, setShowSheet }: any) => {
                     key={index}
                     value={year.value}
                     control={<Radio />}
-                    label={
-                      <div className="border-gray-400">
-                        <p>{year.label}</p>
-                      </div>
-                    }
+                    label={year.label}
                   />
                 ))}
             </RadioGroup>
@@ -113,7 +153,7 @@ const FilterSection = ({ selectedCategory, setShowSheet }: any) => {
               aria-labelledby="price"
               defaultValue=""
             >
-              {price.map((item, index) => (
+              {price.map((item) => (
                 <FormControlLabel
                   key={item.name}
                   value={item.value}
@@ -135,7 +175,7 @@ const FilterSection = ({ selectedCategory, setShowSheet }: any) => {
                 color: teal[400],
               }}
               className="text-2xl font-semibold"
-              id="price"
+              id="discount"
             >
               Discount
             </FormLabel>
@@ -145,7 +185,7 @@ const FilterSection = ({ selectedCategory, setShowSheet }: any) => {
               aria-labelledby="discount"
               defaultValue=""
             >
-              {discount.map((item, index) => (
+              {discount.map((item) => (
                 <FormControlLabel
                   key={item.name}
                   value={item.value}
@@ -157,6 +197,15 @@ const FilterSection = ({ selectedCategory, setShowSheet }: any) => {
           </FormControl>
         </section>
       </div>
+      {/* Show button with active filter count */}
+      <Button
+        variant="contained"
+        color="primary"
+        className="w-full mt-4"
+        onClick={() => setShowSheet(false)} // Close the bottom sheet
+      >
+        Show Results ({getFilteredProductsCount()})
+      </Button>
     </div>
   );
 };

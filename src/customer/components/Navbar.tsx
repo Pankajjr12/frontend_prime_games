@@ -8,14 +8,14 @@ import {
   useTheme,
   Drawer,
   List,
-  ListItem,
+  ListItemButton,
   TextField,
   InputAdornment,
   Divider,
+  Badge,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
-import ListItemButton from "@mui/material/ListItemButton";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
@@ -23,18 +23,21 @@ import StorefrontIcon from "@mui/icons-material/Storefront";
 import CategorySheet from "./CategorySheet";
 import { mainCategory } from "../../data/mainCategory";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../state/store";
 
 const Navbar = () => {
   const theme = useTheme();
   const isLarge = useMediaQuery(theme.breakpoints.up("lg"));
-  const isMedium = useMediaQuery(theme.breakpoints.up("md"));
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [showCategorySheet, setShowCategorySheet] = useState(false);
+
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const dispatch = useAppDispatch();
+  const { user, auth, cart, sellers } = useAppSelector((store) => store);
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
@@ -43,17 +46,15 @@ const Navbar = () => {
   const handleCategoryClick = (categoryId) => {
     setSelectedCategory(categoryId);
     setShowBottomSheet(true);
-
-    // Close the drawer when an item is clicked
     if (drawerOpen) {
       setDrawerOpen(false);
+    } else if (showBottomSheet) {
+      setShowBottomSheet(false);
     }
   };
 
   const handleBottomSheetItemClick = (item) => {
     console.log("Bottom sheet item clicked:", item);
-
-    // Close the bottom sheet when an item is clicked
     setShowBottomSheet(false);
   };
 
@@ -61,11 +62,21 @@ const Navbar = () => {
     setShowBottomSheet(false);
   };
 
-  const handleSearchSubmit = (event) => {
-    event.preventDefault();
-    // Add your search logic here (e.g., navigating to a search results page)
-    console.log("Searching for:", searchQuery);
+  const becomeSellerClick = () => {
+    if (sellers.profile?.id) {
+      navigate("/seller");
+    } else navigate("/become-seller");
   };
+  const handleSearchSubmit = () => {
+    navigate("/search-products");
+    setDrawerOpen(false); // Close drawer on search
+  };
+
+  const handleWishlist = () => {
+    navigate("/wishlist");
+    setDrawerOpen(false); // Close drawer on search
+  };
+
 
   return (
     <Box
@@ -73,7 +84,7 @@ const Navbar = () => {
       sx={{
         borderBottom: 1,
         borderColor: "divider",
-        height: isSmall ? "60px" : "70px", // Adjust height for small screens
+        height: isSmall ? "60px" : "70px",
         zIndex: 1,
       }}
     >
@@ -92,8 +103,7 @@ const Navbar = () => {
               } text-primary-color`}
             >
               Prime GameStore
-            </h1> 
-            
+            </h1>
           )}
           {isLarge && (
             <ul className="flex items-center font-medium text-gray-800">
@@ -105,7 +115,7 @@ const Navbar = () => {
                   }
                   onMouseEnter={() => {
                     setShowCategorySheet(true);
-                    setSelectedCategory(item.categoryId);
+                    setSelectedCategory(item?.categoryId);
                   }}
                   className="mainCategory hover:text-primary-color cursor-pointer px-2 py-1 hover:border-b-2 flex items-center transition-all duration-300 ease-in-out"
                 >
@@ -117,45 +127,50 @@ const Navbar = () => {
         </div>
         <div className="flex gap-2 items-center ml-auto">
           {isLarge && (
-            <form onSubmit={handleSearchSubmit} className="flex items-center">
-              <TextField
-                variant="outlined"
-                size="small"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search..."
-                InputProps={{
-                  startAdornment: <SearchIcon sx={{ marginRight: 1 }} />,
-                }}
-                sx={{ width: "200px" }} // Adjust width as needed
-              />
-            </form>
+            <IconButton onClick={() => navigate("/search-products")}>
+              <SearchIcon className="text-gray-700" sx={{ fontSize: 29 }} />
+            </IconButton>
           )}
-          {false ? (
+
+          {user.user ? (
             <Button
-              className="flex  items-center gap-1"
-              onClick={() => navigate("account/orders")}
+              onClick={() => navigate("/account/orders")}
+              className="flex items-center gap-2"
             >
               <Avatar
-                sx={{ width: 28, height: 28 }}
-                src="https://randomuser.me/api/portraits/women/79.jpg"
+                sx={{ width: 30, height: 30 }}
+                src="https://c.tenor.com/6pRZ6DfX7BMAAAAd/tenor.gif"
               />
-              {!isSmall && <span className="font-semibold">Pankaj</span>}
+              <h1 className="font-semibold hidden lg:block">
+                {user.user?.fullName?.split(" ")[0]}
+              </h1>
             </Button>
           ) : (
-            <Button variant="contained">Login</Button>
+            <Button
+              variant="contained"
+              startIcon={<AccountCircleIcon sx={{ fontSize: "12px" }} />}
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </Button>
           )}
+
           {isLarge && (
-            <IconButton>
+            <IconButton onClick={() => navigate("/wishlist")}>
               <FavoriteBorder sx={{ fontSize: 28 }} />
             </IconButton>
           )}
           <IconButton onClick={() => navigate("/cart")}>
-            <ShoppingCartIcon sx={{ fontSize: 28 }} />
+            <Badge badgeContent={cart.cart?.cartItems.length} color="primary">
+              <ShoppingCartIcon
+                sx={{ fontSize: 29 }}
+                className="text-gray-700"
+              />
+            </Badge>
           </IconButton>
           {isLarge && (
             <Button
-              onClick={() => navigate("/become-seller")}
+              onClick={becomeSellerClick}
               startIcon={<StorefrontIcon />}
               variant="outlined"
             >
@@ -185,7 +200,7 @@ const Navbar = () => {
             borderTopLeftRadius: 16,
             borderTopRightRadius: 16,
             padding: 2,
-            height: "50%", // Adjust height as needed
+            height: "60%",
           },
         }}
       >
@@ -193,60 +208,64 @@ const Navbar = () => {
           <h2 className="font-bold text-lg mb-4">
             Selected Category: {selectedCategory}
           </h2>
-          {/* Pass closeBottomSheet function to CategorySheet */}
-          <CategorySheet selectedCategory={selectedCategory} />
+          <CategorySheet
+            selectedCategory={selectedCategory}
+            setShowSheet={showBottomSheet}
+          />
         </Box>
       </Drawer>
 
-      {/* Drawer for Mobile Menu */}
-      <Drawer
-        className="pt-20"
-        anchor="left"
-        open={drawerOpen}
-        onClose={handleDrawerToggle}
-      >
-        <List sx={{ padding: 2 }}>
-          {" "}
-          {/* Adding padding to the List for better spacing */}
+      {/* Mobile Drawer with Search Field */}
+      <Drawer anchor="left" open={drawerOpen} onClose={handleDrawerToggle}>
+        <List sx={{ padding: 3, marginTop: 4 }}>
+          {/* Logo */}
           <h1
             onClick={() => navigate("/")}
-            className="logo cursor-pointer text-lg text-primary-color mb-2" // Added margin-bottom
+            className="logo cursor-pointer text-xl sm:text-2xl text-primary-color mb-6 text-center sm:text-left"
           >
             Prime GameStore
           </h1>
+
+          {/* Category List */}
           {mainCategory.map((item) => (
             <ListItemButton
               key={item.categoryId}
               onClick={() => {
                 handleCategoryClick(item.categoryId);
-                handleDrawerToggle(); // Close drawer on click
+                handleDrawerToggle();
               }}
-              sx={{ justifyContent: "flex-start", padding: "10px 16px" }} // Adjust padding for ListItemButton
+              sx={{
+                justifyContent: "flex-start",
+                padding: "12px 20px", // Increased padding for better touch experience
+                fontSize: "16px", // Improved font size for readability
+                marginBottom: 1, // Added space between list items
+              }}
             >
               {item.name}
             </ListItemButton>
           ))}
-          <div className="flex justify-center mt-3">
-            {" "}
-            {/* Centering the search field */}
-            <form onSubmit={handleSearchSubmit} className="flex items-center">
-              <TextField
-                variant="outlined"
-                size="small"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search..."
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{ width: "200px", margin: "0 auto" }} // Centering and controlling width
-              />
-            </form>
+
+          {/* Divider after Categories */}
+          <Divider sx={{ margin: "16px 0", borderColor: "#e0e0e0" }} />
+
+          {/* Search Section */}
+          <div className="flex flex-col mt-4 space-y-4 p-3">
+            <p className="text-sm  text-gray-600" onClick={handleWishlist}>My Wishlist</p>
+
+            {/* Search Box */}
+            <div
+              className="bg-slate-100 rounded-lg shadow-md cursor-pointer flex items-center p-3"
+              onClick={handleSearchSubmit}
+            >
+              <SearchIcon className="mr-2 text-primary-color" />
+              <span className="text-black text-sm sm:text-base">
+                Search here !!
+              </span>
+            </div>
           </div>
+
+          {/* Divider before Search */}
+          <Divider sx={{ margin: "16px 0", borderColor: "#e0e0e0" }} />
         </List>
       </Drawer>
     </Box>

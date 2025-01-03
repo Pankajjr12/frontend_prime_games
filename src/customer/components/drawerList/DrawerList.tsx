@@ -3,6 +3,8 @@ import Divider from "@mui/material/Divider";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../../state/store";
+import { performLogout } from "../../../state/Customer/authSlice";
 
 export interface Menu {
   name: string;
@@ -17,12 +19,16 @@ interface DrawerListProps {
   menu2: Menu[];
 }
 const DrawerList = ({ toggleDrawer, menu, menu2 }: DrawerListProps) => {
+  
+  const dispatch = useAppDispatch()
+
+
   const location = useLocation();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    console.log("logout");
-  };
+      dispatch(performLogout())
+  }
  
   const handleClick = (item: any) => () => {
     if (item.name === "Logout") {

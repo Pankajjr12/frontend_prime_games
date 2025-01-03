@@ -7,6 +7,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { useAppDispatch, useAppSelector } from "../../../state/store";
+import { fetchTransactionsBySeller } from "../../../state/Seller/transactionSlice";
+import { Transaction } from "../../../types/transactionTypes";
+import { redableDateTime } from "../../../utils/redableDateTime ";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -28,51 +32,90 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number
-) {
-  return { name, calories, fat, carbs, protein };
-}
 
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
+const orderStatusColor = {
+  PENDING: { color: '#FFA500', label: 'PENDING' }, // Orange
+  SHIPPED: { color: '#1E90FF', label: 'SHIPPED' }, // DodgerBlue
+  DELIVERED: { color: '#32CD32', label: 'DELIVERED' }, // LimeGreen
+  CANCELLED: { color: '#FF0000', label: 'CANCELLED' } // Red
+};
 
 export default function TransactionTable() {
+
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const { sellerOrder, transaction } = useAppSelector(store => store);
+  const dispatch = useAppDispatch();
+
+
+
+  React.useEffect(() => {
+    dispatch(fetchTransactionsBySeller(localStorage.getItem("jwt") || ""));
+  }, [dispatch]);
   return (
+    <>
+
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
-        <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell>Customer Details</TableCell>
-              <TableCell>Order</TableCell>
-              <TableCell align="right">Amount</TableCell>
-            </TableRow>
+          <TableRow>
+            <TableCell>Date</TableCell>
+            <TableCell>Customer Details</TableCell>
+            <TableCell>Order</TableCell>
+            <TableCell align="right">Amount</TableCell>
+          </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <StyledTableRow key={row.name}>
-              <StyledTableCell component="th" scope="row" align="left">
-                {row.name}
-              </StyledTableCell>
-        
-       
-              <StyledTableCell  align="right">{row.protein}</StyledTableCell>
-              <StyledTableCell  align="right">{row.protein}</StyledTableCell>
-              <StyledTableCell  align="right">{row.protein}</StyledTableCell>
-            </StyledTableRow>
+          {transaction.transactions.map((item: Transaction) => (
+            <TableRow key={item.id}>
+              <TableCell align="left"><div className='space-y-1'>
+                <h1 className='font-medium'>{redableDateTime(item.date).split("at")[0]}</h1>
+                <h1 className='text-xs text-gray-600 font-semibold'>{redableDateTime(item.date).split("at")[1]}</h1>
+                </div></TableCell>
+              <TableCell component="th" scope="row">
+                <div className='space-y-2'>
+                  <h1>{item.customer.fullName}</h1>
+                  <h1 className='font-semibold'>{item.customer.email}</h1>
+                  <h1 className='font-bold text-gray-600'>{item.customer.mobile}</h1>
+                </div>
+              </TableCell>
+              <TableCell>
+                Order Id : <strong> {item.order.id} </strong> 
+              </TableCell>
+              <TableCell
+                align="right">
+                ₹{item.order.totalSellingPrice}
+              </TableCell>
+              {/* <TableCell align="right">
+                <Button
+                  size='small'
+                  onClick={(e) => handleClick(e, item.id)}
+                  color='primary'
+                  className='bg-primary-color'>
+                  Status
+                </Button>
+                <Menu
+                  id={`status-menu ${item.id}`}
+                  anchorEl={anchorEl[item.id]}
+                  open={Boolean(anchorEl[item.id])}
+                  onClose={() => handleClose(item.id)}
+                  MenuListProps={{
+                    'aria-labelledby': `status-menu ${item.id}`,
+                  }}
+                >
+                  {orderStatus.map((status) =>
+                    <MenuItem 
+                    key={status.label} 
+                    onClick={() => handleUpdateOrder(item.id, status.label)}>
+                      {status.label}</MenuItem>
+                  )}
+                </Menu>
+              </TableCell> */}
+            </TableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
+  </>
   );
 }

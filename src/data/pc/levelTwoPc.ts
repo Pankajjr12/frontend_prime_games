@@ -21,14 +21,7 @@ export const pcLevelTwo = [
 
         },
         {
-            "name":"Thriller",
-            "categoryId":"thriller_games",
-            "parentCategoryId":"pc",
-            "level":2
-
-        },
-        {
-            "name":"Horror",
+            "name":"Horror & Thriller",
             "categoryId":"horror_games",
             "parentCategoryId":"pc",
             "level":2

@@ -1,14 +1,19 @@
 import React from "react";
 import UserAddressCard from "./UserAddressCard";
+import { useAppSelector } from "../../../state/store";
 
 const Address = () => {
+  const { user } = useAppSelector(store => store)
   return (
-    <div className="space-y-3">
-      {[1, 2, 4, 5].map(() => (
-        <UserAddressCard />
-      ))}
-    </div>
-  );
-};
+      <>
+          <div className='space-y-3'>
+              {user.user?.addresses?.map((item, index) =>
+                  <UserAddressCard
+                      key={item.id}
+                      item={item} />)}
+          </div>
+      </>
+  )
+}
 
 export default Address;

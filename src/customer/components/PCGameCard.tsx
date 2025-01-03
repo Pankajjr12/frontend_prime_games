@@ -1,17 +1,23 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const PCGameCard = ({item}:any) => {
-  const navigate = useNavigate()
+const PCGameCard = ({ item }: any) => {
+  const navigate = useNavigate();
   return (
-    <div onClick={()=>navigate(`/products/${item.categoryId}`)} className='flex w-20 flex-col items-center gap-3 cursor-pointer'>
+    <div
+      onClick={() => navigate(`/products/${item?.categoryId}`)}
+      className="flex flex-col items-center gap-3 cursor-pointer transition-all duration-300 ease-in-out"
+      style={{
+        flexShrink: 0, // Prevent shrinking on scroll
+      }}
+    >
       <img
-        className="object-contain h-16 w-16 md:h-24 md:w-24 lg:h-32 lg:w-32" // Adjust sizes based on screen size
-        src="https://orig00.deviantart.net/3563/f/2016/141/3/d/assassin_s_creed_iii_icon_v3_by_andonovmarko-da3brlj.png"
-        alt="PC Game Icon"
+        className="object-cover w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 rounded-full" // Fixed width and height with rounded full
+        src={item.image}
+        alt={item.name}
       />
     </div>
-  )
+  );
 };
 
 export default PCGameCard;

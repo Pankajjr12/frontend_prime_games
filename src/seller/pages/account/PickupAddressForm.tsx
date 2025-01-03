@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { UpdateDetailsFormProps } from "./BusinessDetailsForm";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Button, TextField } from "@mui/material";
+import { updateSeller } from "../../../state/Seller/sellerSlice";
+import { useAppDispatch, useAppSelector } from "../../../state/store";
 
 const PickupAddressForm = ({ onClose }: UpdateDetailsFormProps) => {
+  const { sellers } = useAppSelector((store) => store);
+  const dispatch = useAppDispatch();
   const formik = useFormik({
     initialValues: {
       address: "",
@@ -20,9 +24,26 @@ const PickupAddressForm = ({ onClose }: UpdateDetailsFormProps) => {
     }),
     onSubmit: (values) => {
       console.log(values);
+      dispatch(
+        updateSeller({
+          pickupAddress: values,
+         
+        })
+      );
       onClose();
     },
   });
+
+  useEffect(() => {
+    if (sellers.profile) {
+      formik.setValues({
+        address: sellers.profile.pickupAddress.address,
+        city: sellers.profile.pickupAddress.city,
+        state: sellers.profile.pickupAddress.state,
+        mobile: sellers.profile.pickupAddress.mobile,
+      });
+    }
+  }, [sellers.profile]);
   return (
     <>
       <h1 className="text-xl pb-5 text-center font-bold text-gray-600">

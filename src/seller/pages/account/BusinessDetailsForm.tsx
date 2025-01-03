@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Button, TextField } from "@mui/material";
+import { updateSeller } from "../../../state/Seller/sellerSlice";
+import { useAppDispatch, useAppSelector } from "../../../state/store";
 
 export interface UpdateDetailsFormProps {
   onClose: () => void;
 }
 
 const BusinessDetailsForm = ({ onClose }: UpdateDetailsFormProps) => {
+  const dispatch = useAppDispatch();
+  const { sellers } = useAppSelector((store) => store);
   const formik = useFormik({
     initialValues: {
       businessName: "",
@@ -21,10 +25,25 @@ const BusinessDetailsForm = ({ onClose }: UpdateDetailsFormProps) => {
     }),
     onSubmit: (values) => {
       console.log(values);
-
+      dispatch(
+        updateSeller({
+          ...values,
+          businessDetails: { businessName: values.businessName },
+        })
+      );
       onClose();
     },
   });
+
+  useEffect(() => {
+    if (sellers.profile) {
+      formik.setValues({
+        businessName: sellers.profile?.businessDetails?.businessName,
+        gstin: sellers.profile?.gstin,
+        accountStatus: sellers.profile?.accountStatus ?? "",
+      });
+    }
+  }, [sellers.profile]);
 
   return (
     <>

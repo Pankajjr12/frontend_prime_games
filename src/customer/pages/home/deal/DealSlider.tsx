@@ -3,10 +3,13 @@ import DealCard from "./DealCard";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider, { Settings } from "react-slick";
+import { useAppSelector } from "../../../../state/store";
+import { Deal } from "../../../../types/dealTypes";
 
-const Deal = () => {
+const DealSlider = () => {
   const sliderRef = useRef<Slider | null>(null); // Create a ref for the slider
-
+  const { homePage } = useAppSelector(store => store);
+  
   const settings: Settings = {
     dots: false,
     infinite: true, // Enable infinite scrolling for smooth transitions
@@ -54,8 +57,10 @@ const Deal = () => {
     <div className="px-4 md:px-20 py-5">
       <div className="overflow-x-hidden"> {/* Hide horizontal scrollbar */}
         <Slider ref={sliderRef} {...settings}>
-          {[3, 4, 5, 2, 6, 8, 9].map((item, index) => (
-            <DealCard key={index} />
+          {homePage.homePageData?.deals?.map((item: Deal) => (
+            <div className="border flex flex-col items-center justify-center" key={item.id}>
+              <DealCard deal={item} />
+            </div>
           ))}
         </Slider>
       </div>
@@ -63,4 +68,4 @@ const Deal = () => {
   );
 };
 
-export default Deal;
+export default DealSlider;

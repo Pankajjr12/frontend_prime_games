@@ -4,63 +4,100 @@ import { psLevelTwo } from "../../data/ps/levelTwoPs";
 import { pcLevelThree } from "../../data/pc/levelThreePc";
 import { psLevelThree } from "../../data/ps/levelThreePs";
 import { Box } from "@mui/material";
-import zIndex from "@mui/material/styles/zIndex";
 import { useNavigate } from "react-router-dom";
+import { trendLevelThree } from "../../data/trending/levelThreeTrending";
+import { trendingLevelTwo } from "../../data/trending/levelTwoTrending";
+import { deviceTwo } from "../../data/appliances/deviceLlevelTwo";
+import { deviceThree } from "../../data/appliances/deviceLevelThree";
+
+// Category data mapping
+const categoryTwo: { [key: string]: any[] } = {
+  pc: pcLevelTwo,
+  ps: psLevelTwo,
+  trending: trendingLevelTwo,
+  devices: deviceTwo, // Ensure 'deviceTwo' and 'trendingLevelTwo' are correctly mapped
+};
 
 const categoryThree: { [key: string]: any[] } = {
   pc: pcLevelThree,
   ps: psLevelThree,
+  trending: trendLevelThree, // Ensure 'trendThree' and 'deviceThree' are correctly mapped
+  devices: deviceThree,
 };
 
-const categoryTwo: { [key: string]: any[] } = {
-  pc: pcLevelTwo,
-  ps: psLevelTwo,
-};
 
+// Function to get child categories based on parentCategoryId
 const childCategory = (category: any, parentCategoryId: any) => {
   return category.filter(
-    (child: any) => child.parentCategoryId == parentCategoryId
+    (child: any) => child.parentCategoryId === parentCategoryId
   );
 };
 
 const CategorySheet = ({ selectedCategory, setShowSheet }: any) => {
-
   const navigate = useNavigate();
+
+  // Debugging log for category data
+  console.log("Selected Category: ", selectedCategory);
+  console.log("Category Two Data: ", categoryTwo[selectedCategory]);
+  console.log("Category Three Data: ", categoryThree[selectedCategory]);
+
+  // Conditional rendering for missing categories or data
+  const categoryData = categoryTwo[selectedCategory];
+  const categoryThreeData = categoryThree[selectedCategory];
+
+  // Additional console log for debugging
+  console.log("categoryData (level two): ", categoryData);
+  console.log("categoryThreeData (level three): ", categoryThreeData);
+
   return (
     <Box
       sx={{ zIndex: 2 }}
       className="bg-white shadow-lg lg:h-[500px] overflow-y-auto"
     >
       <div className="flex text-sm flex-wrap">
-        {categoryTwo[selectedCategory]?.map((item: any, index) => (
-          <div
-            className={`p-8 lg:w-[20%] ${
-              index % 2 == 0 ? "bg-slate-50" : "bg-white"
-            }`}
-          >
-            <p className="text-primary-color font-semibold mb-5">
-              <div className="gradient-underline">
-                <span>{item.name}</span>
-              </div>
+        {categoryData && categoryData.length > 0 ? (
+          categoryData.map((item: any, index: number) => (
+            <div
+              key={item.categoryId} // Added unique key based on categoryId
+              className={`p-8 lg:w-[20%] ${index % 2 === 0 ? "bg-slate-50" : "bg-white"}`}
+            >
+              <p className="text-primary-color font-semibold mb-5">
+                <div className="gradient-underline">
+                  <span>{item.name}</span>
+                </div>
 
-              <ul className="space-y-3 mt-2">
-                {childCategory(
-                  categoryThree[selectedCategory],
-                  item.categoryId
-                ).map((item: any) => (
-                  <div>
-                    <li onClick={()=>navigate("/products/"+item.categoryId)} className="hover:text-primary-color text-black cursor-pointer">
-                      {item.name}
-                    </li>
-                  </div>
-                ))}
-              </ul>
-            </p>
-          </div>
-        ))}
+                <ul className="space-y-3 mt-2">
+                  {/* Handle level-three data if available */}
+                  {categoryThreeData && categoryThreeData.length > 0 ? (
+                    childCategory(categoryThreeData, item.categoryId).map(
+                      (childItem: any) => (
+                        <div key={childItem.categoryId}>
+                          <li
+                            onClick={() =>
+                              navigate("/products/" + childItem.categoryId)
+                            }
+                            className="hover:text-primary-color text-black cursor-pointer"
+                          >
+                            {childItem.name}
+                          </li>
+                        </div>
+                      )
+                    )
+                  ) : (
+                    // If no level-three data, still render level-two data
+                    <li>No subcategories available</li>
+                  )}
+                </ul>
+              </p>
+            </div>
+          ))
+        ) : (
+          <p>No categories available for this selection.</p>
+        )}
       </div>
     </Box>
   );
 };
 
 export default CategorySheet;
+

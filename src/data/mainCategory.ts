@@ -96,12 +96,28 @@ export const mainCategory = [
     {
         name: "Trending",
         categoryId: "trending",
-        level: 1
+        level: 1,
+        levelTwoCategory: [
+            // Trending for PC
+            { "name": "Trending Action", "categoryId": "t_games", "parentCategoryId": "trending", "level": 2 },
+            { "name": "Trending Adventure", "categoryId": "t_games", "parentCategoryId": "trending", "level": 2 },
+            { "name": "Trending Sports", "categoryId": "t_games", "parentCategoryId": "trending", "level": 2 },
+            { "name": "Trending Thriller", "categoryId": "t_games", "parentCategoryId": "trending", "level": 2 },
+            { "name": "Trending Horror", "categoryId": "t_games", "parentCategoryId": "trending", "level": 2 },
+            { "name": "Trending Telltale Games", "categoryId": "t_games", "parentCategoryId": "trending", "level": 2 },
+            // Trending for PS5
+            { "name": "Trending PS5 Action", "categoryId": "t_games", "parentCategoryId": "trending", "level": 2 },
+            { "name": "Trending PS5 Adventure", "categoryId": "t_games", "parentCategoryId": "trending", "level": 2 },
+            { "name": "Trending PS5 Sports", "categoryId": "t_games", "parentCategoryId": "trending", "level": 2 },
+            { "name": "Trending PS5 Thriller", "categoryId": "t_games", "parentCategoryId": "trending", "level": 2 },
+            { "name": "Trending PS5 Horror", "categoryId": "t_games", "parentCategoryId": "trending", "level": 2 },
+            { "name": "Trending PS5 Narrative", "categoryId": "t_games", "parentCategoryId": "trending", "level": 2 }
+        ]
     },
     {
         name: "Gaming Devices",
         categoryId: "devices",
-        level: 1,
-        
+        level: 1
     }
+
 ] 

@@ -1,29 +1,48 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { UpdateDetailsFormProps } from "./BusinessDetailsForm";
 import { Button, TextField } from "@mui/material";
+import { useAppDispatch, useAppSelector } from "../../../state/store";
+import { updateSeller } from "../../../state/Seller/sellerSlice";
 
 const BankDetailsForm = ({ onClose }: UpdateDetailsFormProps) => {
+  const { sellers } = useAppSelector((store) => store);
+  const dispatch = useAppDispatch();
   const formik = useFormik({
     initialValues: {
       accountHolderName: "",
       accountNumber: "",
-      ifscCode: "",
+      ifsCode: "",
     },
     validationSchema: Yup.object({
       accountHolderName: Yup.string().required(
         "Account Holder Name is required"
       ),
       accountNumber: Yup.string().required("Account Number is required"),
-      ifscCode: Yup.string().required("IFSC Code is required"),
+      ifsCode: Yup.string().required("IFSC Code is required"),
     }),
     onSubmit: (values) => {
       console.log(values);
-
+      dispatch(
+        updateSeller({
+          bankDetails: values,
+         
+        })
+      );
       onClose();
     },
   });
+
+  useEffect(() => {
+    if (sellers.profile) {
+      formik.setValues({
+        accountHolderName: sellers.profile.bankDetails?.accountHolderName || "",
+        accountNumber: sellers.profile.bankDetails?.accountNumber || "",
+        ifsCode: sellers.profile.bankDetails?.ifsCode || "",
+      });
+    }
+  }, [sellers.profile]);
   return (
     <>
       <h1 className="text-xl pb-5 text-center font-bold text-gray-600">
@@ -64,10 +83,10 @@ const BankDetailsForm = ({ onClose }: UpdateDetailsFormProps) => {
           id="ifscCode"
           name="ifscCode"
           label="IFSC Code"
-          value={formik.values.ifscCode}
+          value={formik.values.ifsCode}
           onChange={formik.handleChange}
-          error={formik.touched.ifscCode && Boolean(formik.errors.ifscCode)}
-          helperText={formik.touched.ifscCode && formik.errors.ifscCode}
+          error={formik.touched.ifsCode && Boolean(formik.errors.ifsCode)}
+          helperText={formik.touched.ifsCode && formik.errors.ifsCode}
         />
         <Button
           sx={{ py: ".9rem" }}

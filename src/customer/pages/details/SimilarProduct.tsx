@@ -4,8 +4,11 @@ import SimilarProductCard from "./SimilarProductCard";
 import { CustomPrevArrow, CustomNextArrow } from "./../../components/CustomArrow"; // Import your custom arrows
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { useAppSelector } from "../../../state/store";
 
-const SimilarProduct = () => {
+const SimilarProduct = ({ currentProductId }: any) => {
+  const { products } = useAppSelector((store) => store);
+  const filteredProducts = products.products.filter((item) => item.id !== currentProductId);
   const settings = {
     dots: false,
     infinite: false,
@@ -43,8 +46,10 @@ const SimilarProduct = () => {
   return (
     <div className="relative">
       <Slider {...settings}>
-        {[1, 2, 3, 4, 5, 6, 7].map((item) => (
-          <SimilarProductCard key={item} />
+      {filteredProducts.map((item) => (
+          <div key={item.id}>
+            <SimilarProductCard product={item} />
+          </div>
         ))}
       </Slider>
     </div>

@@ -3,6 +3,9 @@ import Box from "@mui/material/Box";
 import { Grid2, TextField , Button } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from 'yup'
+import { createOrder } from "../../../state/Customer/orderSlice";
+import { useAppDispatch } from "../../../state/store";
+import { Address } from "../../../types/userTypes";
 
 const AddressFormSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -15,8 +18,14 @@ const AddressFormSchema = Yup.object().shape({
   state: Yup.string().required("State is required"),
 })
 
+interface AddressFormProp {
+  handleClose: () => void;
+  paymentGateway:string
+}
 
-const AddressForm = () => {
+const AddressForm:React.FC<AddressFormProp> = ({handleClose,paymentGateway}) => {
+
+  const dispatch=useAppDispatch()
   const formik = useFormik({
     initialValues: {
       name : '',
@@ -29,9 +38,16 @@ const AddressForm = () => {
 
     },validationSchema: AddressFormSchema,
     onSubmit:(values) => {
-      console.log(values)
+      console.log("form submited", values);
+      handleCreateOrder(values as Address);
+      handleClose();
     }
   });
+
+  const handleCreateOrder=(address:Address)=>{
+    dispatch(createOrder({address,jwt:localStorage.getItem('jwt')|| "",paymentGateway}))
+  }
+
   return  (
     <Box
       sx={{

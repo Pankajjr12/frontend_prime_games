@@ -78,7 +78,7 @@ const Product = () => {
     <div className="z-10 mt-10">
       <div>
         <h1
-          className="text-3xl text-center font-bold text-gray-700  uppercase space-x-2"
+          className="lg:text-2xl text-lg text-center font-bold text-gray-700  uppercase space-x-2"
           style={{ minHeight: "2.5rem" }} // or adjust this value to match your needs
         >
           {hoveredCategory || "\u00A0"} {/* Non-breaking space if empty */}

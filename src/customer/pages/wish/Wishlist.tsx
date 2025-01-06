@@ -35,7 +35,7 @@ const Wishlist = () => {
       {wishlist?.products?.length ? (
         <section>
           <h1 className="space-x-2">
-            <strong>My Wishlist</strong> <span className="p-2 bg-primary-color text-white rounded-lg">{wishlist.products.length} items</span>
+            <strong className="text-white">My Wishlist</strong> <span className="p-2 bg-primary-color text-white rounded-lg">{wishlist.products.length} items</span>
           </h1>
           <div className="pt-10 flex flex-wrap gap-5">
             {wishlist.products.map((item) => (

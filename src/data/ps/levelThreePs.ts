@@ -46,8 +46,8 @@ export const psLevelThree = [
     },
     // Thriller Games
     { 
-        "name": "Resident Evil Village",
-        "categoryId": "resident_evil_village",
+        "name": "Resident Evil Series",
+        "categoryId": "resident_evil",
         "parentCategoryName": "Thriller",
         "parentCategoryId": "thriller_games"
     },
@@ -82,6 +82,12 @@ export const psLevelThree = [
     { 
         "name": "Racing",
         "categoryId": "racing_games",
+        "parentCategoryName": "Sports",
+        "parentCategoryId": "sports_games"
+    },
+    { 
+        "name": "Cricket",
+        "categoryId": "cricket",
         "parentCategoryName": "Sports",
         "parentCategoryId": "sports_games"
     },

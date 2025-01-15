@@ -98,7 +98,7 @@ const PCGameCategory = () => {
           alignItems: "center", // Vertically center items
         }}
       >
-        {homePage.homePageData?.dealCategories?.slice(0, 8).map((item, index) => (
+        {homePage.homePageData?.gameCategories?.slice(0, 12).map((item, index) => (
           <PCGameCard key={index} item={item} />
         ))}
       </div>

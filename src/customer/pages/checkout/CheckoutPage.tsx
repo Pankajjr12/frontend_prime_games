@@ -140,6 +140,7 @@ const CheckoutPage = () => {
                   sx={{ py: "11px" }}
                   variant="contained"
                   fullWidth
+                  disabled={user.loading}
                 >
                   Checkout
                 </Button>

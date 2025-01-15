@@ -69,7 +69,7 @@ const Home = () => {
       {!homePage.loading ? (
         <div>
           <div className="space-y-5 lg:space-y-10 relative pb-8">
-            {homePage.homePageData?.dealCategories && <PCGameCategory />}
+            {homePage.homePageData?.gameCategories && <PCGameCategory />}
             {homePage.homePageData?.grid && (
               <section>
                 <CategoryGrid />

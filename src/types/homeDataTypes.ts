@@ -7,7 +7,7 @@ interface Deal{
     id: number; 
     grid: HomeCategory[]; 
     shopByCategories: HomeCategory[]; 
-    gamePCCategories: HomeCategory[]; 
+    gameCategories: HomeCategory[]; 
     deals: Deal[]; 
     dealCategories:HomeCategory[];
   }

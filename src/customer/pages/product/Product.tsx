@@ -116,40 +116,23 @@ const Product = () => {
   size="small"
   sx={{
     width: { xs: "100px", sm: "200px" },
-    zIndex: 0,
-    padding: '8px',
-    position: 'relative', // Ensure the FormControl stays relative for positioning
+    padding: "8px",
   }}
 >
-  <InputLabel 
-    className="text-sm" 
-    id="sort-label"
-    sx={{
-      position: 'absolute',    // Label will be positioned absolutely in FormControl
-      top: '50%',              // Center vertically
-      left: '50%',             // Center horizontally
-      transform: 'translate(-50%, -50%)',  // Fine-tune to center precisely
-      width: '100%',           // Allow the label to take full width of FormControl
-      textAlign: 'center',     // Ensure text is centered horizontally
-    }}
-  >
+  <InputLabel id="sort-label" className="text-sm z-10">
     Sort By
   </InputLabel>
   <Select
     labelId="sort-label"
     id="sort-select"
     value={sort}
-    label="Sort By"
     onChange={handleSortChange}
     MenuProps={{
       PaperProps: {
         style: {
-          zIndex: 1, // Keep dropdown above other content
+          zIndex: 1, // Ensure dropdown is above other elements
         },
       },
-    }}
-    sx={{
-      zIndex: 1, // Make sure dropdown does not overlap the label
     }}
   >
     <MenuItem value={"price_low"}>Price: Low To High</MenuItem>

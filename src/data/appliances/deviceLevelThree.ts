@@ -82,7 +82,7 @@ export const deviceThree =
 
         {
             "name": "Logitech MX Master 3",
-            "categoryId": "logitech",
+            "categoryId": "logitech_mice",
             "parentCategoryName": "Mice",
             "parentCategoryId": "mice"
         },

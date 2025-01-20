@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const API_URL = "https://backend-prime-games.onrender.com";
+export const API_URL = "http://localhost:4444";
 // export const DEPLOYED_URL = "https://frontend-prime-games.vercel.app"
 // change api
 

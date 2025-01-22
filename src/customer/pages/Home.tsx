@@ -3,8 +3,7 @@ import PCGameCategory from "./home/pc/PCGameCategory";
 import CategoryGrid from "./home/category/CategoryGrid";
 import Deal from "./home/deal/DealSlider";
 import ShopByCategory from "./home/category/ShopByCategory";
-import img from "../../assests/21.jpg";
-import { Backdrop, Button, CircularProgress } from "@mui/material";
+import { Backdrop, Button, CircularProgress, Typography } from "@mui/material";
 import Storefront from "@mui/icons-material/Storefront";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
@@ -38,18 +37,7 @@ const footerImages = [
 const Home = () => {
   const { homePage } = useAppSelector((store) => store);
   const [showChatBot, setShowChatBot] = useState(false);
-  const becomeSellerClick = () => {
-    navigate("/become-seller");
-  };
-
-  const handleShowChatBot = () => {
-    setShowChatBot(!showChatBot);
-  };
-  const handleCloseChatBot = () => {
-    setShowChatBot(false);
-  };
   const navigate = useNavigate();
-
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
@@ -57,13 +45,25 @@ const Home = () => {
       setCurrentImageIndex(
         (prevIndex) => (prevIndex + 1) % footerImages.length
       );
-    }, 10000); // Change image every 6 seconds
+    }, 10000); // Change image every 10 seconds
 
-    // Clear interval when component unmounts
     return () => clearInterval(intervalId);
   }, []);
 
   const img = footerImages[currentImageIndex].image;
+
+  const becomeSellerClick = () => {
+    navigate("/become-seller");
+  };
+
+  const handleShowChatBot = () => {
+    setShowChatBot(!showChatBot);
+  };
+
+  const handleCloseChatBot = () => {
+    setShowChatBot(false);
+  };
+
   return (
     <>
       {!homePage.loading ? (
@@ -75,7 +75,6 @@ const Home = () => {
                 <CategoryGrid />
               </section>
             )}
-
             {homePage.homePageData?.deals && (
               <section className="pt-10">
                 <h1 className="text-lg lg:text-4xl pb-5 lg:pb-10 font-bold text-primary-color text-center">
@@ -126,9 +125,9 @@ const Home = () => {
                 onClick={handleShowChatBot}
                 sx={{
                   borderRadius: "100%",
-                  height: "50px", // Increase height
-                  width: "50px", // Increase width to make it more prominent
-                  padding: "0", // Remove padding for exact circle
+                  height: "50px",
+                  width: "50px",
+                  padding: "0",
                 }}
                 variant="contained"
                 className="flex justify-center items-center"
@@ -143,7 +142,12 @@ const Home = () => {
         </div>
       ) : (
         <Backdrop open={true}>
-          <CircularProgress color="inherit" />
+          <div className="flex flex-col items-center">
+            <CircularProgress color="inherit" />
+            <Typography variant="h6" color="white" mt={2}>
+              Please wait patiently for 5 minutes. Data loading...
+            </Typography>
+          </div>
         </Backdrop>
       )}
     </>

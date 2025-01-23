@@ -24,6 +24,7 @@ export interface Product {
     discountPercent?: number;
     quantity?: number;
     brand: string;
+    platform:string;
     images: any[]; // Array of strings for image URLs
     numRatings?: number;
     category?: Category; // Optional since a product might not have a category assigned yet

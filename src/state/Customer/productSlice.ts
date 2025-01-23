@@ -63,6 +63,7 @@ export const getAllProducts = createAsyncThunk<
         brand?: string;
         color?: string;
         years?: string;
+        platform?:string;
         minPrice?: number;
         maxPrice?: number;
         minDiscount?: number;

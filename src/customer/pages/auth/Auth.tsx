@@ -5,10 +5,7 @@ import { Alert, Button, Snackbar } from "@mui/material";
 import { useAppSelector } from "../../../state/store";
 
 const footerImages = [
-  {
-    name: "",
-    image: "https://i.ibb.co/tK91rdr/21.jpg",
-  },
+
   {
     name: "Tomb Raider",
     image: "https://i.ibb.co/s1B8KqN/banner-tomb.jpg",

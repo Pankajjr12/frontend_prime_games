@@ -3,13 +3,49 @@ import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import { Alert, Button, Snackbar } from "@mui/material";
 import { useAppSelector } from "../../../state/store";
-import authImg from "../../../assests/banner_creed.jpg";
+
+const footerImages = [
+  {
+    name: "",
+    image: "https://i.ibb.co/tK91rdr/21.jpg",
+  },
+  {
+    name: "Tomb Raider",
+    image: "https://i.ibb.co/s1B8KqN/banner-tomb.jpg",
+  },
+  {
+    name: "God of War",
+    image: "https://i.ibb.co/gWhhdYn/banner-god.jpg",
+  },
+  {
+    name: "Walking Dead",
+    image: "https://i.ibb.co/vkKWcnq/banner-dead.jpg",
+  },
+  {
+    name: "Creed",
+    image: "https://i.ibb.co/y0Y95VR/banner-creed.jpg",
+  },
+];
 
 const Auth = () => {
   const [isLoginPage, setIsLoginPage] = useState(true);
   const handleCloseSnackbar = () => setSnackbarOpen(false);
   const { auth } = useAppSelector((store) => store);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+    useEffect(() => {
+      const intervalId = setInterval(() => {
+        setCurrentImageIndex(
+          (prevIndex) => (prevIndex + 1) % footerImages.length
+        );
+      }, 10000); // Change image every 10 seconds
+  
+      return () => clearInterval(intervalId);
+    }, []);
+  
+    const img = footerImages[currentImageIndex].image;
 
   useEffect(() => {
     if (auth.otpSent || auth.error) {
@@ -21,7 +57,7 @@ const Auth = () => {
   return (
     <div className="flex justify-center h-[90vh] items-center">
       <div className="max-w-md h-[85vh] rounded-md border shadow-lg ">
-        <img className="w-full rounded-t-md" src={authImg} alt="" />
+        <img className="w-full rounded-t-md" src={img} alt="" />
         <div className="mt-8 px-10">
           {isLoginPage ? <LoginForm /> : <RegisterForm />}
 

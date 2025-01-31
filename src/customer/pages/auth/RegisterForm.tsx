@@ -68,11 +68,15 @@ const RegisterForm = () => {
 
   // Handle success/error messages from the auth state
   useEffect(() => {
-    if (auth.otpSent) {
-      setSnackbarMessage('Registration successful!');
+    if (auth.loginSuccess) {
+      setSnackbarMessage('Register Successfully! 👍');
       setSnackbarSeverity('success');
       setOpenSnackbar(true);
-    }
+      // Optionally reset loginSuccess if you don't want the message to persist
+      setTimeout(() => {
+          setOpenSnackbar(false);
+      }, 6000);
+  }
 
     if (auth.error) {
       setSnackbarMessage('Registration failed. Please try again.');

@@ -9,7 +9,9 @@ const initialState: AuthState = {
     role: null,
     loading: false,
     error: null,
-    otpSent:false
+    otpSent:false,
+    loginSuccess: false,
+    signupSuccess: false,
 };
 export const sendLoginSignupOtp = createAsyncThunk<ApiResponse, { email: string }>(
     'auth/sendLoginSignupOtp',
@@ -84,28 +86,34 @@ const authSlice = createSlice({
             .addCase(signup.pending, (state) => {
                 state.loading = true;
                 state.error = null;
+                state.signupSuccess = false;
             })
             .addCase(signup.fulfilled, (state, action: PayloadAction<AuthResponse>) => {
                 state.jwt = action.payload.jwt;
                 state.role = action.payload.role;
                 state.loading = false;
+                state.signupSuccess = true;
             })
             .addCase(signup.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+                state.signupSuccess = false;
             })
             .addCase(signin.pending, (state) => {
                 state.loading = true;
                 state.error = null;
+                state.loginSuccess = false;
             })
             .addCase(signin.fulfilled, (state, action: PayloadAction<AuthResponse>) => {
                 state.jwt = action.payload.jwt;
                 state.role = action.payload.role;
                 state.loading = false;
+                state.loginSuccess = true;
             })
             .addCase(signin.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+                state.loginSuccess = false;
             })
             
     },

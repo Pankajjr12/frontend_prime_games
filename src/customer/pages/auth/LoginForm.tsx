@@ -59,18 +59,22 @@ const LoginForm = () => {
 
   // Handle login success or failure
   useEffect(() => {
-    if (auth.otpSent) {
-      setSnackbarMessage('Login successful!');
+    if (auth.loginSuccess) {
+      setSnackbarMessage('Login Successful!');
       setSnackbarSeverity('success');
       setOpenSnackbar(true);
-    }
+      // Optionally reset loginSuccess if you don't want the message to persist
+      setTimeout(() => {
+          setOpenSnackbar(false);
+      }, 6000);
+  }
 
     if (auth.error) {
       setSnackbarMessage('Login failed. Please check your credentials.');
       setSnackbarSeverity('error');
       setOpenSnackbar(true);
     }
-  }, [auth]);
+  }, [auth.loginSuccess]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined;

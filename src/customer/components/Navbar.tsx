@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   IconButton,
@@ -42,6 +42,13 @@ const Navbar = () => {
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };
+
+  useEffect(() => {
+    if (!user.user) {
+      // User has logged out, or there is no user
+      // Reset any state or UI changes related to the logged-out state here if necessary
+    }
+  }, [user.user]);
 
   const handleCategoryClick = (categoryId) => {
     setSelectedCategory(categoryId);

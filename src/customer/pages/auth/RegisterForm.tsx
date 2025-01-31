@@ -1,14 +1,11 @@
-import { Button, CircularProgress, TextField } from "@mui/material";
+import { Button, CircularProgress, Snackbar, Alert, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
-
 import { FormikValues, useFormik } from "formik";
 import { useDispatch } from "react-redux";
-
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../state/store";
 import { sendLoginSignupOtp, signup } from "../../../state/Customer/authSlice";
 import OtpInput from "../../components/OtpInput";
-import PhoneInputWithCountrySelect from "react-phone-number-input";
 
 const RegisterForm = () => {
   const navigate = useNavigate();
@@ -18,6 +15,11 @@ const RegisterForm = () => {
   const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const { auth } = useAppSelector((store) => store);
+
+  // Snackbar states
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
 
   const formik = useFormik({
     initialValues: {
@@ -37,7 +39,6 @@ const RegisterForm = () => {
           navigate,
         })
       );
-      console.log("Form data:", values);
     },
   });
 
@@ -46,9 +47,7 @@ const RegisterForm = () => {
   };
 
   const handleResendOTP = () => {
-    // Implement OTP resend logic
     dispatch(sendLoginSignupOtp({ email: formik.values.email }));
-    console.log("Resend OTP");
     setTimer(30);
     setIsTimerActive(true);
   };
@@ -61,6 +60,26 @@ const RegisterForm = () => {
   const handleLogin = () => {
     formik.handleSubmit();
   };
+
+  // Handle Snackbar close
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
+  };
+
+  // Handle success/error messages from the auth state
+  useEffect(() => {
+    if (auth.otpSent) {
+      setSnackbarMessage('Registration successful!');
+      setSnackbarSeverity('success');
+      setOpenSnackbar(true);
+    }
+
+    if (auth.error) {
+      setSnackbarMessage('Registration failed. Please try again.');
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
+    }
+  }, [auth]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined;
@@ -85,9 +104,7 @@ const RegisterForm = () => {
 
   return (
     <div>
-      <h1 className="text-center font-bold text-xl text-primary-color pb-5">
-        Signup
-      </h1>
+      <h1 className="text-center font-bold text-xl text-primary-color pb-5">Signup</h1>
       <form className="space-y-5">
         <TextField
           fullWidth
@@ -97,16 +114,12 @@ const RegisterForm = () => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           error={formik.touched.email && Boolean(formik.errors.email)}
-          helperText={
-            formik.touched.email ? (formik.errors.email as string) : undefined
-          }
+          helperText={formik.touched.email ? formik.errors.email as string : undefined}
         />
 
         {auth.otpSent && (
           <div className="space-y-2">
-            <p className="font-medium text-sm">
-              * Enter OTP sent to your mobile number
-            </p>
+            <p className="font-medium text-sm">* Enter OTP sent to your mobile number</p>
             <OtpInput length={6} onChange={handleOtpChange} error={false} />
             <p className="text-xs space-x-2">
               {isTimerActive ? (
@@ -123,9 +136,7 @@ const RegisterForm = () => {
                 </>
               )}
             </p>
-            {formik.touched.otp && formik.errors.otp && (
-              <p>{formik.errors.otp as string}</p>
-            )}
+            {formik.touched.otp && formik.errors.otp && <p>{formik.errors.otp as string}</p>}
           </div>
         )}
 
@@ -138,13 +149,9 @@ const RegisterForm = () => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.touched.name && Boolean(formik.errors.name)}
-            helperText={
-              formik.touched.name ? (formik.errors.name as string) : undefined
-            }
+            helperText={formik.touched.name ? formik.errors.name as string : undefined}
           />
         )}
-
-      
 
         {auth.otpSent && (
           <div>
@@ -155,15 +162,11 @@ const RegisterForm = () => {
               variant="contained"
               sx={{ py: "11px" }}
             >
-              {" "}
               {auth.loading ? (
-                <CircularProgress
-                  size="small"
-                  sx={{ width: "27px", height: "27px" }}
-                />
+                <CircularProgress size="small" sx={{ width: "27px", height: "27px" }} />
               ) : (
-                " Signup "
-              )}{" "}
+                "Signup"
+              )}
             </Button>
           </div>
         )}
@@ -177,37 +180,22 @@ const RegisterForm = () => {
             sx={{ py: "11px" }}
           >
             {auth.loading ? (
-              <CircularProgress
-                size="small"
-                sx={{ width: "27px", height: "27px" }}
-              />
+              <CircularProgress size="small" sx={{ width: "27px", height: "27px" }} />
             ) : (
-              "sent otp"
+              "Send OTP"
             )}
           </Button>
         )}
       </form>
+
+      {/* Snackbar Component */}
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: "100%" }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
 
 export default RegisterForm;
-
-
-
-
-  // {/* {auth.otpSent && (
-  //         <div className="space-y-2">
-  //           {/* Add mobile Number with Country Code */}
-  //           <PhoneInputWithCountrySelect
-  //               defaultCountry="US" // Set default country
-  //               name="mobile"
-  //               value={formik.values.mobile}
-  //               onChange={formik.handleChange} // Update Formik state
-  //               error={formik.touched.mobile && Boolean(formik.errors.mobile)}
-  //             />
-  //             {formik.touched.mobile && formik.errors.mobile && (
-  //               <p className="text-red-500 text-xs">{formik.errors.mobile as string}</p>
-  //             )}
-  //         </div>
-  //       )} */}

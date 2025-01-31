@@ -52,7 +52,7 @@ const Account = () => {
   return (
     <div className="px-5 lg:px-52 min-h-screen mt-10">
       <div>
-        <h1 className="text-xl font-bold pb-5">Pankaj</h1>
+        <h1 className="text-xl font-bold pb-5">{user.user?.fullName}</h1>
       </div>
       <Divider />
       <div className="grid grid-cols-1 lg:grid-cols-3 lg:min-h-[78vh]">

@@ -3,7 +3,7 @@ export const psLevelThree = [
    
     { 
         "name": "Spider-Man: Miles Morales",
-        "categoryId": "spider_man",
+        "categoryId": "spiderman",
         "parentCategoryName": "Action",
         "parentCategoryId": "action_games"
     }, 

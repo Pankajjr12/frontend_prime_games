@@ -37,7 +37,11 @@ const Navbar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const dispatch = useAppDispatch();
-  const { user, auth, cart, sellers } = useAppSelector((store) => store);
+  const user = useAppSelector((state) => state.user);
+const auth = useAppSelector((state) => state.auth);
+const cart = useAppSelector((state) => state.cart);
+const sellers = useAppSelector((state) => state.sellers);
+
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);

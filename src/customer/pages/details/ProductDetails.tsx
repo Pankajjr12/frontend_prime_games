@@ -120,6 +120,7 @@ const ProductDetails = () => {
             <div className="w-full lg:w-[15%] flex flex-wrap lg:flex-col gap-3">
               {products.product?.images.map((item, index) => (
                 <img
+                  key={item || index}
                   onClick={() => setSelectedImage(index)}
                   className="lg:w-full w-[50px] cursor-pointer rounded-md"
                   src={item}

@@ -145,7 +145,7 @@ export const pcLevelThree = [
     // Telltale Games
     {
         "name": "The Walking Dead",
-        "categoryId": "walk_dead",
+        "categoryId": "walking_dead",
         "parentCategoryName": "Telltale Games",
         "parentCategoryId": "telltale_games"
     },

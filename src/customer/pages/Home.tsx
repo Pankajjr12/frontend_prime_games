@@ -35,7 +35,8 @@ const footerImages = [
 ];
 
 const Home = () => {
-  const { homePage } = useAppSelector((store) => store);
+  // ✅ GOOD
+const homePage = useAppSelector((state) => state.homePage);
   const [showChatBot, setShowChatBot] = useState(false);
   const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);

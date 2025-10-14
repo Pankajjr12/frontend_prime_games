@@ -22,7 +22,11 @@ import { createHomeCategories, fetchHomePageData } from "./state/Customer/homeSl
 
 function App() {
   const dispatch = useAppDispatch();
-  const { auth, sellerAuth, sellers, user } = useAppSelector((store) => store);
+  const auth = useAppSelector((state) => state.auth);
+const sellerAuth = useAppSelector((state) => state.sellerAuth);
+const sellers = useAppSelector((state) => state.sellers);
+const user = useAppSelector((state) => state.user);
+
   const navigate = useNavigate();
 
   useEffect(() => {

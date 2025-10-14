@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Button, Modal } from "@mui/material";
+import { Button, Modal, Snackbar } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 import AddressCard from "./AddressCard";
 import Box from "@mui/material/Box";
 import AddressForm from "./AddressForm";
@@ -12,6 +13,11 @@ import stripeImage from "../../../assests/strp.jpg";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../state/store";
 import { createOrder } from "../../../state/Customer/orderSlice";
+
+// Snackbar alert wrapper
+const Alert = React.forwardRef<HTMLDivElement, any>(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const style = {
   position: "absolute",
@@ -36,45 +42,52 @@ const paymentGatewayList = [
     label: "",
   },
 ];
+
 const CheckoutPage = () => {
   const navigate = useNavigate();
-  const [value, setValue] = React.useState(0);
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((store) => store);
-  const [paymentGateway, setPaymentGateway] = useState(
-    paymentGatewayList[0].value
-  );
 
-  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = useState(0);
+  const [paymentGateway, setPaymentGateway] = useState(paymentGatewayList[0].value);
+  const [open, setOpen] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const handleChange = (event: any) => {
-    console.log("-----", event.target.value);
     setValue(event.target.value);
-  };
-
-  const handleCreateOrder = () => {
-    if (user.user?.addresses)
-      dispatch(
-        createOrder({
-          paymentGateway,
-          address: user.user?.addresses[value],
-          jwt: localStorage.getItem("jwt") || "",
-        })
-      );
   };
 
   const handlePaymentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPaymentGateway((event.target as HTMLInputElement).value);
   };
+
+  const handleCreateOrder = () => {
+    const addresses = user.user?.addresses;
+
+    if (!addresses || addresses.length === 0 || !addresses[value]) {
+      setShowSnackbar(true);
+      return;
+    }
+
+    dispatch(
+      createOrder({
+        paymentGateway,
+        address: addresses[value],
+        jwt: localStorage.getItem("jwt") || "",
+      })
+    );
+  };
+
   return (
     <>
       <div className="pt-10 px-5 sm:px-10 md:px-44 lg:px-60 min-h-screen">
         <div className="space-y-5 lg:space-x-0 lg:grid grid-cols-3 lg:gap-9">
           <div className="col-span-2 space-y-5">
             <div className="flex justify-between items-center">
-              <h1 className="font-semibold">Select Dilivery Address</h1>
+              <h1 className="font-semibold">Select Delivery Address</h1>
               <Button onClick={handleOpen} className="font-semibold">
                 Add New Address
               </Button>
@@ -101,37 +114,34 @@ const CheckoutPage = () => {
               </Button>
             </div>
           </div>
+
           <div>
-            <div>
-              <div className="p-5 space-y-3 rounded-md">
-                <h1 className="font-medium pb-2 text-center">
-                  Choose Payment Gateway
-                </h1>
-                <RadioGroup
-                  row
-                  aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group"
-                  className="flex justify-between pr-0"
-                  onChange={handlePaymentChange}
-                  value={paymentGateway}
-                >
-                  {paymentGatewayList.map((item) => (
-                    <FormControlLabel
-                      className="border w-[45%] pr-2 rounded-md flex justify-center"
-                      value={item.value}
-                      control={<Radio />}
-                      label={
-                        <img
-                          className={`${item.value == "stripe" ? "w-14" : ""}`}
-                          src={item.image}
-                          alt={item.label}
-                        />
-                      }
-                    />
-                  ))}
-                </RadioGroup>
-              </div>
+            <div className="p-5 space-y-3 rounded-md">
+              <h1 className="font-medium pb-2 text-center">Choose Payment Gateway</h1>
+              <RadioGroup
+                row
+                className="flex justify-between pr-0"
+                onChange={handlePaymentChange}
+                value={paymentGateway}
+              >
+                {paymentGatewayList.map((item) => (
+                  <FormControlLabel
+                    key={item.value}
+                    className="border w-[45%] pr-2 rounded-md flex justify-center"
+                    value={item.value}
+                    control={<Radio />}
+                    label={
+                      <img
+                        className={`${item.value === "stripe" ? "w-14" : ""}`}
+                        src={item.image}
+                        alt={item.label}
+                      />
+                    }
+                  />
+                ))}
+              </RadioGroup>
             </div>
+
             <section className="border rounded-md">
               <PricingCard />
               <div className="p-5">
@@ -149,6 +159,7 @@ const CheckoutPage = () => {
           </div>
         </div>
 
+        {/* Add New Address Modal */}
         <Modal
           open={open}
           onClose={handleClose}
@@ -156,9 +167,25 @@ const CheckoutPage = () => {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <AddressForm  paymentGateway={paymentGateway} handleClose={handleClose} />
+            <AddressForm paymentGateway={paymentGateway} handleClose={handleClose} />
           </Box>
         </Modal>
+
+        {/* Snackbar Alert */}
+        <Snackbar
+          open={showSnackbar}
+          autoHideDuration={4000}
+          onClose={() => setShowSnackbar(false)}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert
+            onClose={() => setShowSnackbar(false)}
+            severity="warning"
+            sx={{ width: "100%" }}
+          >
+            Please enter a delivery address first!
+          </Alert>
+        </Snackbar>
       </div>
     </>
   );

@@ -8,7 +8,9 @@ import { Deal } from "../../../../types/dealTypes";
 
 const DealSlider = () => {
   const sliderRef = useRef<Slider | null>(null); // Create a ref for the slider
-  const { homePage } = useAppSelector(store => store);
+  // ✅ GOOD
+const homePage = useAppSelector((state) => state.homePage);
+
   
   const settings: Settings = {
     dots: false,

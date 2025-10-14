@@ -3,7 +3,8 @@ import { useAppSelector } from "../../../../state/store";
 import PCGameCard from "../../../components/PCGameCard";
 
 const PCGameCategory = () => {
-  const { homePage } = useAppSelector((store) => store);
+ // ✅ GOOD
+const homePage = useAppSelector((state) => state.homePage);
   const [scrollDirection, setScrollDirection] = useState("animate-scroll");
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);

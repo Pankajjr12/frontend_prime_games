@@ -2,7 +2,9 @@ import React from "react";
 import { useAppSelector } from "../../../../state/store";
 
 const CategoryGrid = () => {
-  const { homePage } = useAppSelector((store) => store);
+// ✅ GOOD
+const homePage = useAppSelector((state) => state.homePage);
+
   
   return (
     <div className="grid gap-1 sm:gap-2 md:gap-4 grid-rows-12 grid-cols-12 sm:grid-cols-6 md:grid-cols-12 h-[300px] sm:h-[400px] md:h-[600px] px-5 sm:px-6 lg:px-10">

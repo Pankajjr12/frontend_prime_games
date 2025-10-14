@@ -10,7 +10,8 @@ const tab = [
 ]
 const Payment = () => {
   const [activeTab, setActiveTab] = useState(tab[0].name);
-  const { sellers } = useAppSelector((store) => store);
+  const sellers = useAppSelector((state) => state.sellers);
+
 
   const handleActiveTab = (item:any) => {
       setActiveTab(item.name);

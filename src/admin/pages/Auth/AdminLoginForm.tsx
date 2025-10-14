@@ -17,7 +17,8 @@ const AdminLoginForm = () => {
     const [timer, setTimer] = useState<number>(30); // Timer state
     const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
     const dispatch = useAppDispatch();
-    const { auth } = useAppSelector(store => store)
+    const auth = useAppSelector((state) => state.auth);
+
 
     const formik = useFormik({
         initialValues: {

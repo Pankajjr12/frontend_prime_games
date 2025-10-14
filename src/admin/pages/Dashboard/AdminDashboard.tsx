@@ -5,7 +5,9 @@ import { Alert, Snackbar } from "@mui/material";
 import { useAppSelector } from "../../../state/store";
 
 const AdminDashboard = () => {
-  const { deal,admin } = useAppSelector(store => store)
+  const deal = useAppSelector(state => state.deal);
+  const admin = useAppSelector(state => state.admin);
+  
   const [snackbarOpen, setOpenSnackbar] = useState(false);
 
   const handleCloseSnackbar = () => {

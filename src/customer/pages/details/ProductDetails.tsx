@@ -170,16 +170,22 @@ const ProductDetails = () => {
             <p className="text-gray-500 font-semibold">
               {products.product?.brand}
             </p>
-            <div className="flex justify-between items-center py-2 border w-[180px] px-3 mt-5">
+            <div className="flex justify-between items-center gap-2 py-2 border w-[230px] px-3 mt-5">
               <div className="flex gap-1 items-center">
                 <span>{products.product?.numRatings}</span>
                 <StarIcon sx={{ color: teal[500], fontSize: "16px" }} />
               </div>
               <Divider orientation="vertical" flexItem />
               <span
-                style={{ color: products.product?.in_stock ? "green" : "red" }}
+                style={{
+                  color: products.product?.platform,
+                  fontSize: "0.8em",
+                  fontStyle: "italic",
+                  whiteSpace: "nowrap",
+                }}
+                className="underline-animate"
               >
-                {products.product?.in_stock ? "In Stock" : "Out of Stock"}
+                {products.product?.platform}
               </span>
             </div>
             <div>

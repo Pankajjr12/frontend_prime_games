@@ -51,12 +51,14 @@ const FilterSection = ({ selectedCategory, setShowSheet }: any) => {
   // Filter products based on current filters
   const filterProducts = () => {
     let filtered = [...products]; // Create a shallow copy of products
-
-    // Apply filtering based on the search parameters
+  
     searchParams.forEach((value, key) => {
       filtered = filtered.filter((product: Product) => {
-        // You can add filtering logic for each param here
-        if (key === "year" && product.years.includes(value)) {
+        if (
+          key === "year" &&
+          ((Array.isArray(product.years) && product.years.includes(value)) ||
+            product.years === value)
+        ) {
           return true;
         }
         if (key === "price" && product.mrpPrice <= parseInt(value)) {
@@ -68,9 +70,10 @@ const FilterSection = ({ selectedCategory, setShowSheet }: any) => {
         return false;
       });
     });
-
-    setFilteredProducts(filtered); // Update the filtered products state
+  
+    setFilteredProducts(filtered);
   };
+  
 
   // Run the filtering logic whenever the products or searchParams change
   useEffect(() => {

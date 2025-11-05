@@ -121,6 +121,31 @@ code {
   opacity: 1; /* Fully visible */
   pointer-events: auto; /* Allow interaction when shown */
 }
+.underline-animate {
+  position: relative;
+  display: inline-block;
+  font-size: 0.8em;
+  font-style: italic;
+  white-space: nowrap;
+  color: #000; /* You can use dynamic color if needed */
+}
+
+.underline-animate::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background-color: currentColor; /* Uses text color */
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.underline-animate:hover::after {
+  transform: scaleX(1);
+}
 
 
 

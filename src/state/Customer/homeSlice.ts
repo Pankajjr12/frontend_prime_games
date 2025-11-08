@@ -1,5 +1,4 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
 import { HomeCategory, HomeData } from '../../types/homeDataTypes';
 import { api } from '../../config/Api';
 

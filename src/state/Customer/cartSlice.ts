@@ -1,10 +1,6 @@
 // src/slices/cartSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Cart, CartItem } from "../../types/cartTypes";
-
-import { ApiResponse } from "../../types/authTypes";
-
-import { stat } from "fs";
 import { api } from "../../config/Api";
 import { sumCartItemMrpPrice, sumCartItemSellingPrice } from "../../utils/sumCart";
 import { RootState } from "../store";

@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
 import { CreateReviewRequest, Review, ReviewState } from "../../types/reviewTypes";
 import { api } from "../../config/Api";
 import { ApiResponse } from "../../types/authTypes";

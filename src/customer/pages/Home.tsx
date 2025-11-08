@@ -40,7 +40,6 @@ const homePage = useAppSelector((state) => state.homePage);
   const [showChatBot, setShowChatBot] = useState(false);
   const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentImageIndex(

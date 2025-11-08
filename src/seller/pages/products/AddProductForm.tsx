@@ -254,13 +254,14 @@ const AddProductForm = () => {
             >
               <InputLabel id="year-label">Year</InputLabel>
               <Select
-                labelId="year-label"
-                id="year"
-                name="year"
-                value={formik.values.years}
-                onChange={formik.handleChange}
-                label="Year"
-              >
+  labelId="year-label"
+  id="years"
+  name="years"
+  value={formik.values.years}
+  onChange={formik.handleChange}
+  label="Year"
+>
+
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>

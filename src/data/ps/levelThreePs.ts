@@ -3,13 +3,13 @@ export const psLevelThree = [
    
     { 
         "name": "Spider-Man: Miles Morales",
-        "categoryId": "spiderman",
+        "categoryId": "spiderman_series",
         "parentCategoryName": "Action",
         "parentCategoryId": "action_games"
     }, 
     { 
         "name": "Star Wars",
-        "categoryId": "star_wars",
+        "categoryId": "star_wars_series",
         "parentCategoryName": "Action",
         "parentCategoryId": "action_games"
     }, 
@@ -40,28 +40,28 @@ export const psLevelThree = [
     },
     { 
         "name": "Mass Effect",
-        "categoryId": "mass",
+        "categoryId": "mass_series",
         "parentCategoryName": "Adventure",
         "parentCategoryId": "adventure_games"
     },
     // Thriller Games
     { 
         "name": "Resident Evil Series",
-        "categoryId": "resident_evil",
+        "categoryId": "resident_evil_series",
         "parentCategoryName": "Thriller",
         "parentCategoryId": "thriller_games"
     },
 
     { 
         "name": "Alan Wake Remastered",
-        "categoryId": "alan_wake",
+        "categoryId": "alan_wake_series",
         "parentCategoryName": "Thriller",
         "parentCategoryId": "thriller_games"
     },
    
     { 
         "name": "The Dark Pictures Anthology Series",
-        "categoryId": "dark_pictures",
+        "categoryId": "dark_pictures_series",
         "parentCategoryName": "Thriller",
         "parentCategoryId": "thriller_games"
     },
@@ -69,13 +69,13 @@ export const psLevelThree = [
     // Sports Games
     { 
         "name": "FIFA 23",
-        "categoryId": "fifa",
+        "categoryId": "fifa_games",
         "parentCategoryName": "Sports",
         "parentCategoryId": "sports_games"
     },
     { 
         "name": "NBA 2K23",
-        "categoryId": "nba",
+        "categoryId": "nba_games",
         "parentCategoryName": "Sports",
         "parentCategoryId": "sports_games"
     },
@@ -87,7 +87,7 @@ export const psLevelThree = [
     },
     { 
         "name": "Cricket",
-        "categoryId": "cricket",
+        "categoryId": "cricket_games",
         "parentCategoryName": "Sports",
         "parentCategoryId": "sports_games"
     },
@@ -101,13 +101,13 @@ export const psLevelThree = [
     // PS5 Horror Games
     { 
         "name": "Dying Light 2 Stay Human",
-        "categoryId": "dying_light_2",
+        "categoryId": "dying_light_series",
         "parentCategoryName": "Horror",
         "parentCategoryId": "horror_games"
     },
     { 
         "name": "Amnesia: Rebirth",
-        "categoryId": "amnesia_dark",
+        "categoryId": "amnesia_dark_series",
         "parentCategoryName": "Horror",
         "parentCategoryId": "horror_games"
     },
@@ -121,19 +121,19 @@ export const psLevelThree = [
     // PS5 Telltale Games
     { 
         "name": "The Walking Dead: The Telltale Definitive Series",
-        "categoryId": "walk_dead",
+        "categoryId": "walk_dead_series",
         "parentCategoryName": "PS5 Telltale Games",
         "parentCategoryId": "telltale_games"
     },
     { 
         "name": "The Wolf Among Us 2",
-        "categoryId": "wolf",
+        "categoryId": "wolf_series",
         "parentCategoryName": "PS5 Telltale Games",
         "parentCategoryId": "telltale_games"
     },
     { 
         "name": "Batman: The Telltale Series",
-        "categoryId": "batman",
+        "categoryId": "batman_series",
         "parentCategoryName": "PS5 Telltale Games",
         "parentCategoryId": "telltale_games"
     },

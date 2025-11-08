@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import StarIcon from "@mui/icons-material/Star";
 import { teal } from "@mui/material/colors";
-import { Divider, Button, Modal, Box, Snackbar } from "@mui/material";
+import {
+  Divider,
+  Button,
+  Modal,
+  Box,
+  Snackbar,
+  CircularProgress,
+} from "@mui/material";
 import ShieldIcon from "@mui/icons-material/Shield";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
@@ -32,16 +39,13 @@ const style = {
   transform: "translate(-50%, -50%)",
   width: "auto",
   height: "100%",
-  // bgcolor: 'background.paper',
   boxShadow: 24,
   outline: "none",
 };
 
 const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
-
   const navigate = useNavigate();
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -52,65 +56,71 @@ const ProductDetails = () => {
   const { products, review } = useAppSelector((store) => store);
   const { productId, categoryId } = useParams();
   const [selectedImage, setSelectedImage] = useState(0);
-
   const [isFavorite, setIsFavorite] = useState(false);
-  const { wishlist } = useAppSelector((store) => store);
 
-  const images = [
-    "https://assets.mycast.io/posters/resident-evil-a-nightmare-on-dulvey-fan-casting-poster-426731-large.jpg?1707090598",
-    "https://apollo2.dl.playstation.net/cdn/EP0102/CUSA09473_00/YS4DidDlWvRfqWUCJezWpeNNpbkoq12B.png",
-    "https://th.bing.com/th/id/OIP.Rjk3mfFICWqQzvSN6CqKkwHaHa?w=1080&h=1080&rs=1&pid=ImgDetMain",
-  ];
+  // ✅ Loading State
+  const [loading, setLoading] = useState(true);
+
+  // ✅ Scroll to Top on page load and when productId changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [productId]);
 
   useEffect(() => {
     if (productId) {
-      dispatch(fetchProductById(Number(productId)));
-      dispatch(fetchReviewsByProductId({ productId: Number(productId) }));
+      setLoading(true);
+      Promise.all([
+        dispatch(fetchProductById(Number(productId))),
+        dispatch(fetchReviewsByProductId({ productId: Number(productId) })),
+      ]).finally(() => setLoading(false));
     }
-    dispatch(getAllProducts({ category: categoryId }));
   }, [productId]);
 
-  const handleSnackbarClose = () => {
-    setOpenSnackbar(false);
-  };
+  useEffect(() => {
+    dispatch(getAllProducts({ category: categoryId }));
+  }, [categoryId]);
+
+  const handleSnackbarClose = () => setOpenSnackbar(false);
+
   const handleAddCart = () => {
     const jwt = localStorage.getItem("jwt");
-
     if (jwt) {
-      // If user is logged in, dispatch add item to cart
       dispatch(
         addItemToCart({
           jwt,
           request: { productId: Number(productId), year: "2018", quantity },
         })
       );
-      setSnackbarMessage("Item added to cart successfully!"); // Success message
+      setSnackbarMessage("Item added to cart successfully!");
     } else {
-      // If user is not logged in, show login prompt
       setSnackbarMessage("Please login first to add item to cart");
     }
-
-    setOpenSnackbar(true); // Show the Snackbar
+    setOpenSnackbar(true);
   };
 
   const handleAddWishlist = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     const jwt = localStorage.getItem("jwt");
-
     if (jwt) {
-      // If user is logged in, toggle favorite and add to wishlist
       setIsFavorite((prev) => !prev);
       if (productId) {
         dispatch(addProductToWishlist({ productId: Number(productId) }));
       }
-      setSnackbarMessage("Item added to wishlist successfully!"); // Success message
+      setSnackbarMessage("Item added to wishlist successfully!");
     } else {
-      // If user is not logged in, show login prompt
       setSnackbarMessage("Please login first to add item to wishlist");
     }
-
-    setOpenSnackbar(true); // Show the Snackbar
+    setOpenSnackbar(true);
   };
+
+  // ✅ Show Loader While Fetching Data
+  if (loading || !products.product) {
+    return (
+      <div className="flex justify-center items-center h-screen w-full">
+        <CircularProgress />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -170,24 +180,32 @@ const ProductDetails = () => {
             <p className="text-gray-500 font-semibold">
               {products.product?.brand}
             </p>
-            <div className="flex justify-between items-center gap-2 py-2 border w-[230px] px-3 mt-5">
-              <div className="flex gap-1 items-center">
-                <span>{products.product?.numRatings}</span>
-                <StarIcon sx={{ color: teal[500], fontSize: "16px" }} />
+            <div className="flex justify-between items-center gap-2 py-2 px-3 mt-5 border rounded-lg shadow-sm w-[240px] bg-white">
+              {/* Ratings */}
+              <div className="flex items-center gap-1">
+                <span className="font-medium text-gray-700">
+                  {products.product?.numRatings}
+                </span>
+                <StarIcon sx={{ color: teal[500], fontSize: "18px" }} />
               </div>
-              <Divider orientation="vertical" flexItem />
+
+              <Divider
+                orientation="vertical"
+                flexItem
+                className="border-gray-300"
+              />
+
+              {/* Platform */}
               <span
+                className="text-gray-500 text-sm italic underline-animate truncate"
                 style={{
-                  color: products.product?.platform,
-                  fontSize: "0.8em",
-                  fontStyle: "italic",
-                  whiteSpace: "nowrap",
+                  color: products.product?.platform || "#650404", // fallback color if you want platform color
                 }}
-                className="underline-animate"
               >
                 {products.product?.platform}
               </span>
             </div>
+
             <div>
               <div className="price flex items-center gap-3 mt-5 text-2xl">
                 <span className="font-semibold text-gray-800">
@@ -277,7 +295,7 @@ const ProductDetails = () => {
               <div className="mt-10">
                 <div className="space-y-5">
                   {review.reviews.map((item, i) => (
-                    <div className="space-y-5">
+                    <div className="space-y-5" key={item.id}>
                       <ReviewCard item={item} />
                       <Divider />
                     </div>
@@ -294,7 +312,11 @@ const ProductDetails = () => {
         <div className="mt-20">
           <h1 className="text-2xl font-bold">Similar Product</h1>
           <div className="pt-5">
-            <SimilarProduct currentProductId={Number(productId)} />
+            {/* ✅ Refresh SimilarProduct when clicking new product */}
+            <SimilarProduct
+              currentProductId={Number(productId)}
+              key={productId}
+            />
           </div>
         </div>
       </div>

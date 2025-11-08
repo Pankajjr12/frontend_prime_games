@@ -25,7 +25,6 @@ const categoryThree: { [key: string]: any[] } = {
   devices: deviceThree,
 };
 
-
 // Function to get child categories based on parentCategoryId
 const childCategory = (category: any, parentCategoryId: any) => {
   return category.filter(
@@ -59,36 +58,35 @@ const CategorySheet = ({ selectedCategory, setShowSheet }: any) => {
           categoryData.map((item: any, index: number) => (
             <div
               key={item.categoryId} // Added unique key based on categoryId
-              className={`p-8 lg:w-[20%] ${index % 2 === 0 ? "bg-slate-50" : "bg-white"}`}
+              className={`p-8 lg:w-[20%] ${
+                index % 2 === 0 ? "bg-slate-50" : "bg-white"
+              }`}
             >
-              <p className="text-primary-color font-semibold mb-5">
+              <div className="text-primary-color font-semibold mb-5">
                 <div className="gradient-underline">
                   <span>{item.name}</span>
                 </div>
 
                 <ul className="space-y-3 mt-2">
-                  {/* Handle level-three data if available */}
                   {categoryThreeData && categoryThreeData.length > 0 ? (
                     childCategory(categoryThreeData, item.categoryId).map(
                       (childItem: any) => (
-                        <div key={childItem.categoryId}>
-                          <li
-                            onClick={() =>
-                              navigate("/products/" + childItem.categoryId)
-                            }
-                            className="hover:text-primary-color text-black cursor-pointer"
-                          >
-                            {childItem.name}
-                          </li>
-                        </div>
+                        <li
+                          key={childItem.categoryId}
+                          onClick={() =>
+                            navigate("/products/" + childItem.categoryId)
+                          }
+                          className="hover:text-primary-color text-black cursor-pointer"
+                        >
+                          {childItem.name}
+                        </li>
                       )
                     )
                   ) : (
-                    // If no level-three data, still render level-two data
                     <li>No subcategories available</li>
                   )}
                 </ul>
-              </p>
+              </div>
             </div>
           ))
         ) : (
@@ -100,4 +98,3 @@ const CategorySheet = ({ selectedCategory, setShowSheet }: any) => {
 };
 
 export default CategorySheet;
-

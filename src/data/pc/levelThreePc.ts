@@ -2,19 +2,14 @@ export const pcLevelThree = [
     // Action Games
     {
         "name": "Call of Duty",
-        "categoryId": "call_of_duty",
+        "categoryId": "call_of_duty_series",
         "parentCategoryName": "Action",
         "parentCategoryId": "action_games"
     },
-    {
-        "name": "Assassin's Creed",
-        "categoryId": "assassins_creed",
-        "parentCategoryName": "Action",
-        "parentCategoryId": "action_games"
-    },
+    
     {
         "name": "Far Cry 5",
-        "categoryId": "far_cry",
+        "categoryId": "far_cry_series",
         "parentCategoryName": "Action",
         "parentCategoryId": "action_games"
     },
@@ -26,13 +21,13 @@ export const pcLevelThree = [
     },
     {
         "name": "God of War",
-        "categoryId": "god_of_war",
+        "categoryId": "god_of_war_series",
         "parentCategoryName": "Action",
         "parentCategoryId": "action_games"
     },
     {
         "name": "Tom Clancy",
-        "categoryId": "tom_clancy",
+        "categoryId": "tom_clancy_series",
         "parentCategoryName": "Action",
         "parentCategoryId": "action_games"
     },
@@ -40,25 +35,31 @@ export const pcLevelThree = [
     // Adventure Games
     {
         "name": "Tomb Raider",
-        "categoryId": "tomb_raider",
+        "categoryId": "tomb_raider_series",
+        "parentCategoryName": "Adventure",
+        "parentCategoryId": "adventure_games"
+    },
+    {
+        "name": "Assassin's Creed",
+        "categoryId": "assassins_creed_series",
         "parentCategoryName": "Adventure",
         "parentCategoryId": "adventure_games"
     },
     {
         "name": "The Witcher 3",
-        "categoryId": "witcher",
+        "categoryId": "witcher_series",
         "parentCategoryName": "Adventure",
         "parentCategoryId": "adventure_games"
     },
     {
         "name": "Life is Strange",
-        "categoryId": "life_is_strange",
+        "categoryId": "life_is_strange_series",
         "parentCategoryName": "Adventure",
         "parentCategoryId": "adventure_games"
     },
     {
         "name": "Uncharted 4",
-        "categoryId": "uncharted",
+        "categoryId": "uncharted_series",
         "parentCategoryName": "Adventure",
         "parentCategoryId": "adventure_games"
     },
@@ -66,19 +67,19 @@ export const pcLevelThree = [
     // Thriller Games
     {
         "name": "Resident Evil Series",
-        "categoryId": "resident_evil",
+        "categoryId": "resident_evil_series",
         "parentCategoryName": "Horror & Thriller",
         "parentCategoryId": "horror_games"
     },
     {
         "name": "Silent Hill Series",
-        "categoryId": "silent_hill",
+        "categoryId": "silent_hill_series",
         "parentCategoryName": "Horror & Thriller",
         "parentCategoryId": "horror_games"
     },
     {
         "name": "Alan Wake",
-        "categoryId": "alan_wake",
+        "categoryId": "alan_wake_series",
         "parentCategoryName": "Horror & Thriller",
         "parentCategoryId": "horror_games"
     },
@@ -98,13 +99,13 @@ export const pcLevelThree = [
     // Sports Games
     {
         "name": "FIFA Sports",
-        "categoryId": "fifa",
+        "categoryId": "fifa_games",
         "parentCategoryName": "Sports",
         "parentCategoryId": "sports_games"
     },
     {
         "name": "NBA 2K24",
-        "categoryId": "nba",
+        "categoryId": "nba_games",
         "parentCategoryName": "Sports",
         "parentCategoryId": "sports_games"
     },
@@ -122,7 +123,7 @@ export const pcLevelThree = [
     },
     {
         "name": "WWE 2K Battlegrounds",
-        "categoryId": "wwe",
+        "categoryId": "wwe_games",
         "parentCategoryName": "Sports",
         "parentCategoryId": "sports_games"
     },
@@ -130,14 +131,14 @@ export const pcLevelThree = [
     // Horror Games
     {
         "name": "Amnesia: The Dark Descent",
-        "categoryId": "amnesia_dark",
+        "categoryId": "amnesia_dark_series",
         "parentCategoryName": "Horror & Thriller",
         "parentCategoryId": "horror_games"
     },
 
     {
         "name": "The Dark Pictures Anthology Series",
-        "categoryId": "dark_pictures",
+        "categoryId": "dark_pictures_series",
         "parentCategoryName": "Horror & Thriller",
         "parentCategoryId": "horror_games"
     },
@@ -145,13 +146,13 @@ export const pcLevelThree = [
     // Telltale Games
     {
         "name": "The Walking Dead",
-        "categoryId": "walking_dead",
+        "categoryId": "walking_dead_series",
         "parentCategoryName": "Telltale Games",
         "parentCategoryId": "telltale_games"
     },
     {
         "name": "The Wolf Among Us",
-        "categoryId": "wolf",
+        "categoryId": "wolf_series",
         "parentCategoryName": "Telltale Games",
         "parentCategoryId": "telltale_games"
     },
@@ -163,7 +164,7 @@ export const pcLevelThree = [
     },
     {
         "name": "Batman: The Telltale Series",
-        "categoryId": "batman",
+        "categoryId": "batman_series",
         "parentCategoryName": "Telltale Games",
         "parentCategoryId": "telltale_games"
     },
